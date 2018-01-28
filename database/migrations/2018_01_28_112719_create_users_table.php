@@ -1,11 +1,10 @@
 <?php
 
-//use Illuminate\Support\Facades\Schema;
-use Jialeo\LaravelSchemaExtend\Schema;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEUsersTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +13,7 @@ class CreateEUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('e_users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id')->comment('自增长主键');
             $table->string('name')->unique()->comment('用户名');
             $table->string('email')->unique()->comment('邮箱');
@@ -32,6 +31,6 @@ class CreateEUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('e_users');
+        Schema::dropIfExists('users');
     }
 }
