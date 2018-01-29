@@ -11,10 +11,23 @@
 |
 */
 
+/**
+ *  根目录welcome页
+ */
 Route::get('/', function () {
     return view('welcome');
 });
-
+/**
+ *  前台登录路由
+ */
 Auth::routes();
 
+/**
+ *  前台Home
+ */
 Route::get('/home', 'HomeController@index')->name('home');
+
+/**
+ *  后台
+ */
+Route::get('/admin', 'Admin\IndexController@index')->name('admin');
