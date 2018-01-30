@@ -9,11 +9,11 @@ class IndexController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
 
     public function index()
     {
-        return 1;
+        return view('admin/index');
     }
 }

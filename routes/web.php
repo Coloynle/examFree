@@ -28,6 +28,14 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 /**
- *  后台
+ *  后台登录
  */
-Route::get('/admin', 'Admin\IndexController@index')->name('admin');
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('/', 'Admin\IndexController@index');
+    Route::get('login', 'Admin\Auth\LoginController@showLoginForm');
+    Route::post('login', 'Admin\Auth\LoginController@login');
+    Route::post('logout', 'Admin\Auth\LoginController@logout');
+    Route::group(['middleware' => 'auth:admin'], function () {
+        Route::get('/', 'Admin\IndexController@index');
+    });
+});
