@@ -31,11 +31,11 @@ Route::get('/home', 'HomeController@index')->name('home');
  *  后台登录
  */
 Route::group(['prefix' => 'admin'], function () {
-    Route::get('/', 'Admin\IndexController@index');
+    Route::get('/', 'Admin\IndexController@guest');
     Route::get('login', 'Admin\Auth\LoginController@showLoginForm');
     Route::post('login', 'Admin\Auth\LoginController@login');
     Route::post('logout', 'Admin\Auth\LoginController@logout');
     Route::group(['middleware' => 'auth:admin'], function () {
-        Route::get('/', 'Admin\IndexController@index');
+        Route::get('/index', 'Admin\IndexController@index');
     });
 });
