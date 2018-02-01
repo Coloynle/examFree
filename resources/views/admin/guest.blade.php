@@ -68,7 +68,7 @@
 <div class="flex-center position-ref full-height">
     <div class="top-right links">
         @if(\Illuminate\Support\Facades\Auth::guard('admin')->check())
-            <a href="{{ url('/admin') }}">Admin</a>
+            <a href="{{ url('/admin/index') }}">Admin</a>
             <a href="javascript:;" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout</a>
             <form id="logout-form" action="{{ url('/admin/logout') }}" method="POST" style="display: none;">
                 {{ csrf_field() }}
