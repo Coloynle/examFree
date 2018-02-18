@@ -89,49 +89,54 @@
 </header>
 {{-- 头部文件模板END--}}
 
+{{-- 侧边栏文件模板 --}}
 <aside class="Hui-aside">
     <div class="menu_dropdown bk_2">
         <dl id="menu-article">
-            <dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-            <dd>
-                <ul>
-                    <li><a data-href="article-list.html" data-title="资讯管理" href="javascript:void(0)">资讯管理</a></li>
-                </ul>
-            </dd>
+            <dl id="menu-article">
+                <dt><i class="Hui-iconfont">&#xe616;</i> 试题管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a data-href="article-list.html" data-title="添加试题" href="javascript:void(0)">添加试题</a></li>
+                        <li><a data-href="article-list.html" data-title="管理试题" href="javascript:void(0)">管理试题</a></li>
+                        <li><a data-href="article-list.html" data-title="导入试题" href="javascript:void(0)">导入试题</a></li>
+                    </ul>
+                </dd>
+            </dl>
         </dl>
         <dl id="menu-picture">
-            <dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe613;</i> 试卷管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="picture-list.html" data-title="图片管理" href="javascript:void(0)">图片管理</a></li>
+                    <li><a data-href="picture-list.html" data-title="添加试卷" href="javascript:void(0)">添加试卷</a></li>
+                    <li><a data-href="picture-list.html" data-title="管理试卷" href="javascript:void(0)">管理试卷</a></li>
                 </ul>
             </dd>
         </dl>
         <dl id="menu-product">
-            <dt><i class="Hui-iconfont">&#xe620;</i> 产品管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe620;</i> 考试管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="product-brand.html" data-title="品牌管理" href="javascript:void(0)">品牌管理</a></li>
-                    <li><a data-href="product-category.html" data-title="分类管理" href="javascript:void(0)">分类管理</a></li>
-                    <li><a data-href="product-list.html" data-title="产品管理" href="javascript:void(0)">产品管理</a></li>
+                    <li><a data-href="product-brand.html" data-title="添加考试" href="javascript:void(0)">添加考试</a></li>
+                    <li><a data-href="product-list.html" data-title="管理考试" href="javascript:void(0)">管理考试</a></li>
                 </ul>
             </dd>
         </dl>
         <dl id="menu-comments">
-            <dt><i class="Hui-iconfont">&#xe622;</i> 评论管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe622;</i> 成绩管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="http://h-ui.duoshuo.com/admin/" data-title="评论列表" href="javascript:;">评论列表</a></li>
-                    <li><a data-href="feedback-list.html" data-title="意见反馈" href="javascript:void(0)">意见反馈</a></li>
+                    <li><a data-href="http://h-ui.duoshuo.com/admin/" data-title="考试评分" href="javascript:;">考试评分</a></li>
+                    <li><a data-href="feedback-list.html" data-title="成绩详情" href="javascript:void(0)">成绩详情</a></li>
                 </ul>
             </dd>
         </dl>
         <dl id="menu-member">
-            <dt><i class="Hui-iconfont">&#xe60d;</i> 会员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="member-list.html" data-title="会员列表" href="javascript:;">会员列表</a></li>
-                    <li><a data-href="member-del.html" data-title="删除的会员" href="javascript:;">删除的会员</a></li>
+                    <li><a data-href="member-list.html" data-title="添加用户" href="javascript:;">添加用户</a></li>
+                    <li><a data-href="member-del.html" data-title="管理用户" href="javascript:;">管理用户</a></li>
                     <li><a data-href="member-level.html" data-title="等级管理" href="javascript:;">等级管理</a></li>
                     <li><a data-href="member-scoreoperation.html" data-title="积分管理" href="javascript:;">积分管理</a></li>
                     <li><a data-href="member-record-browse.html" data-title="浏览记录" href="javascript:void(0)">浏览记录</a></li>
@@ -180,6 +185,15 @@
 </aside>
 <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
 
+<div class="contextMenu" id="Huiadminmenu">
+    <ul>
+        <li id="closethis">关闭当前 </li>
+        <li id="closeall">关闭全部 </li>
+    </ul>
+</div>
+
+{{-- 侧边栏文件模板END --}}
+
 @yield('content')
 <script type="text/javascript" src="{{ asset('h-ui/lib/jquery/1.9.1/jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/lib/layer/2.4/layer.js') }}"></script>
@@ -188,5 +202,6 @@
 <script type="text/javascript" src="{{ asset('h-ui/lib/jquery.validation/1.14.0/messages_zh.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/static/h-ui/js/H-ui.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/static/h-ui.admin/js/H-ui.admin.js') }}"></script>
+<script type="text/javascript" src="{{ asset('h-ui/lib/jquery.contextmenu/jquery.contextmenu.r2.js') }}"></script>
 </body>
 </html>
