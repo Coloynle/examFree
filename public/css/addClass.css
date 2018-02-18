@@ -6,3 +6,8 @@
 .f-clean{
     float: none;
 }
+
+/*清除背景*/
+.bg-clean{
+    background: none;
+}

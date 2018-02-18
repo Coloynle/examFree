@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.admin', 'ExamFree').'-Admin' }}</title>
+    <title>{{ env('ADMIN_NAME','ExamAdmin') }}</title>
 
     <!-- Styles -->
     {{--<link rel="Bookmark" href="/favicon.ico" >--}}
@@ -19,10 +19,12 @@
     <script type="text/javascript" src="{{ asset('h-ui/lib/respond.min.js')}}"></script>
 
     <![endif]-->
+
     <link href="{{ asset('h-ui/static/h-ui/css/H-ui.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('h-ui/static/h-ui.admin/css/H-ui.admin.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('h-ui/lib/Hui-iconfont/1.0.8/iconfont.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('h-ui/static/h-ui.admin/skin/blue/skin.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/addClass.css') }}" rel="stylesheet" type="text/css" />
 
     <!--[if IE 6]>
     <script type="text/javascript" src="{{ asset('h-ui/lib/DD_belatedPNG_0.0.8a-min.js') }}" ></script>
@@ -35,8 +37,8 @@
 <header class="navbar-wrapper">
     <div class="navbar navbar-fixed-top">
         <div class="container-fluid cl">
-            <a class="logo navbar-logo f-l mr-10 hidden-xs" href="{{ url('/admin') }}">{{ config('app.admin', 'ExamAdmin') }}</a>
-            <span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span>
+            <a class="logo navbar-logo f-l mr-10 hidden-xs" href="{{ url('/admin') }}">{{ env('ADMIN_NAME','ExamAdmin') }}</a>
+            <span class="logo navbar-slogan f-l mr-10 hidden-xs">{{ env('ADMIN_VERSION','v1.0') }}</span>
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
             <nav class="nav navbar-nav">
                 <ul class="cl">
@@ -97,7 +99,7 @@
                 <dt><i class="Hui-iconfont">&#xe616;</i> 试题管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        <li><a data-href="article-list.html" data-title="添加试题" href="javascript:void(0)">添加试题</a></li>
+                        <li><a data-href="{{ url('admin/question/addQuestion/SingleChoice/') }}" data-title="添加试题" href="javascript:void(0)">添加试题</a></li>
                         <li><a data-href="article-list.html" data-title="管理试题" href="javascript:void(0)">管理试题</a></li>
                         <li><a data-href="article-list.html" data-title="导入试题" href="javascript:void(0)">导入试题</a></li>
                     </ul>

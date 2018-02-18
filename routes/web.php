@@ -39,3 +39,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/index', 'Admin\IndexController@index');
     });
 });
+
+/**
+ *  试题管理
+ */
+Route::group(['prefix' => 'admin/question'],function (){
+    Route::get('addQuestion/{type}/{id?}','Admin\QuestionController@addQuestion');
+});
