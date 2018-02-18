@@ -11,3 +11,13 @@
 .bg-clean{
     background: none;
 }
+
+/*ueditor样式*/
+.ueditor{
+    width: 100% !important;
+}
+
+/*修正按钮和文字对不齐*/
+.t-2{
+    top: 2px;
+}

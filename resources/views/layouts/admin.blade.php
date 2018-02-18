@@ -10,7 +10,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ env('ADMIN_NAME','ExamAdmin') }}</title>
-
+    <script type="text/javascript" src="{{ asset('h-ui/lib/jquery/1.9.1/jquery.min.js') }}"></script>
     <!-- Styles -->
     {{--<link rel="Bookmark" href="/favicon.ico" >--}}
     {{--<link rel="Shortcut Icon" href="/favicon.ico" />--}}
@@ -197,7 +197,6 @@
 {{-- 侧边栏文件模板END --}}
 
 @yield('content')
-<script type="text/javascript" src="{{ asset('h-ui/lib/jquery/1.9.1/jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/lib/layer/2.4/layer.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/lib/jquery.validation/1.14.0/jquery.validate.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/lib/jquery.validation/1.14.0/validate-methods.js') }}"></script>
