@@ -56,17 +56,18 @@ class QuestionController extends Controller
         //错误信息自定义
         $vailErrorInfo = [
             'required' => ':attribute 必填',
+            'max' => ':attribute 长度不可大于10000',
         ];
 
         //验证规则数组
         foreach ($parameters['option'] as $item => $value){
             $key = 'option.'.$item;
-            $vaildatedData[$key] = "bail|required";
+            $vaildatedData[$key] = "bail|required|max:10000";
             $vaildateName[$key] = '选项'.$item.'描述';
 
         }
-        $vaildatedData['description'] = "bail|required";
-        $vaildatedData['analysis'] = "bail|required";
+        $vaildatedData['description'] = "bail|required|max:10000";
+        $vaildatedData['analysis'] = "bail|required|max:10000";
         $vaildatedData['option_radio'] = "bail|required";
 //        dd($vaildatedData);
 
@@ -77,6 +78,8 @@ class QuestionController extends Controller
             echo '正确答案不存在';
             return;
         }
+
+
 
 //        dd($request);
     }
