@@ -21,3 +21,20 @@
 .t-2{
     top: 2px;
 }
+
+/* 补充button样式 */
+.btn-add{
+    margin-top: 3px;
+    margin-right: 13px;
+}
+
+/* 补充panel次要色 */
+.panel-secondary-change{
+    border-color: #b4cad0;
+}
+
+.panel-secondary-change > .panel-header{
+    border-color: #b4cad0;
+    background-color: #b4cad0;
+    color: #fff;
+}
