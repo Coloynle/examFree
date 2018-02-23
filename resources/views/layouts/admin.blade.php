@@ -59,7 +59,7 @@
                     @else
                         <li>管理员</li>
                         <li class="dropDown dropDown_hover">
-                            <a href="#" class="dropDown_A"> {{ Auth::user()->name }} <i class="Hui-iconfont">&#xe6d5;</i>
+                            <a href="#" class="dropDown_A"> {{ \Illuminate\Support\Facades\Auth::guard('admin')->user()->name }} <i class="Hui-iconfont">&#xe6d5;</i>
                             </a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="#">个人信息</a></li>
@@ -100,7 +100,7 @@
                 <dd>
                     <ul>
                         <li><a data-href="{{ url('admin/question/addQuestion/SingleChoice/') }}" data-title="添加试题" href="javascript:void(0)">添加试题</a></li>
-                        <li><a data-href="article-list.html" data-title="管理试题" href="javascript:void(0)">管理试题</a></li>
+                        <li><a data-href="{{ url('admin/question/changeQuestion/1') }}" data-title="管理试题" href="javascript:void(0)">管理试题</a></li>
                         <li><a data-href="article-list.html" data-title="导入试题" href="javascript:void(0)">导入试题</a></li>
                     </ul>
                 </dd>

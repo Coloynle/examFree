@@ -3,37 +3,38 @@
 */
 
 /*清除浮动*/
-.f-clean{
+.f-clean {
     float: none;
 }
 
 /*清除背景*/
-.bg-clean{
+.bg-clean {
     background: none;
 }
 
 /*ueditor样式*/
-.ueditor{
+.ueditor {
     width: 100% !important;
 }
 
 /*修正按钮和文字对不齐*/
-.t-2{
+.t-2 {
     top: 2px;
 }
 
 /* 补充button样式 */
-.btn-add{
+.btn-add {
     margin-top: 3px;
     margin-right: 13px;
 }
 
 /* 补充panel次要色 */
-.panel-secondary-change{
+.panel-secondary-change {
     border-color: #b4cad0;
 }
 
-.panel-secondary-change > .panel-header{
+/* 补充panel-secondary-change */
+.panel-secondary-change > .panel-header {
     border-color: #b4cad0;
     background-color: #b4cad0;
     color: #fff;

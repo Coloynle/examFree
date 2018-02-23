@@ -43,7 +43,9 @@ Route::group(['prefix' => 'admin'], function () {
 /**
  *  试题管理
  */
-Route::group(['prefix' => 'admin/question'],function (){
-    Route::get('addQuestion/{type}/{id?}','Admin\QuestionController@addQuestion');
-    Route::post('createQuestion/','Admin\QuestionController@createQuestion');
+Route::group(['prefix' => 'admin/question'], function () {
+    Route::get('addQuestion/{type}/{id?}', 'Admin\QuestionController@addQuestion');
+    Route::post('createQuestion/', 'Admin\QuestionController@createQuestion');
+    Route::get('changeQuestion/{id}', 'Admin\QuestionController@changeQuestion');
+
 });

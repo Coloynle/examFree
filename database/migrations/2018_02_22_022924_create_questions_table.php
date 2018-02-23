@@ -15,11 +15,13 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->increments('id')->comment('自增长主键');
-            $table->string('description')->unique()->comment('试题描述');
-            $table->string('type')->unique()->comment('试题类型（单选多选填空判断简答）');
-            $table->string('answer ')->comment('试题答案');
-            $table->string('analysis ')->comment('试题详解');
-            $table->increments('create_user_id')->comment('创建者的ID');
+            $table->string('description')->comment('试题描述');
+            $table->string('type')->comment('试题类型（单选多选填空判断简答）');
+            $table->string('answer_info')->comment('答案描述');
+            $table->string('answer')->comment('试题答案');
+            $table->string('analysis')->comment('试题详解');
+            $table->integer('create_user_id')->comment('创建者的ID');
+            $table->integer('update_user_id')->comment('创建者的ID');
             $table->rememberToken();
             $table->timestamps();
         });

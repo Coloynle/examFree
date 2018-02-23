@@ -5,13 +5,49 @@
     <script type="text/javascript" charset="utf-8" src="{{ asset('h-ui/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js') }}"></script>
     <script>
 
+        @if(Session::has('success'))
+        $(function () {
+            $.Huimodalalert('{{ Session::get('success') }}', 2000);
+        });
+        @elseif(Session::has('error'))
+        $(function () {
+            $.Huimodalalert('{{ Session::get('error') }}', 2000);
+        });
+        @endif
+
         /* 全局变量 */
+                @if($context['status']['type'] == 'SingleChoice')               {{-- 单选题 --}}
         var type = 'radio';
         var typeClass = 'radio-box';
         var delButton = "<a class=\"btn btn-danger radius f-r btn-add\" href=\"javascript:;\" onclick=\"deleteOption(this)\">" +
             "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
             "</a>";
-
+                @elseif(  $context['status']['type'] == 'MultipleChoice' )      {{-- 多选题 --}}
+        var type = 'checkbox';
+        var typeClass = 'check-box';
+        var delButton = "<a class=\"btn btn-danger radius f-r btn-add\" href=\"javascript:;\" onclick=\"deleteOption(this)\">" +
+            "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
+            "</a>";
+                @elseif(  $context['status']['type'] == 'TrueOrFalse' )         {{-- 判断题 --}}
+        var type = 'radio';
+        var typeClass = 'radio-box';
+        var delButton = "<a class=\"btn btn-danger radius f-r btn-add\" href=\"javascript:;\" onclick=\"deleteOption(this)\">" +
+            "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
+            "</a>";
+                @elseif(  $context['status']['type'] == 'FillInTheBlank' )      {{-- 填空题 --}}
+        var type = 'radio';
+        var typeClass = 'radio-box';
+        var delButton = "<a class=\"btn btn-danger radius f-r btn-add\" href=\"javascript:;\" onclick=\"deleteOption(this)\">" +
+            "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
+            "</a>";
+                @elseif(  $context['status']['type'] == 'ShortAnswer' )         {{-- 简答题 --}}
+        var type = 'radio';
+        var typeClass = 'radio-box';
+        var delButton = "<a class=\"btn btn-danger radius f-r btn-add\" href=\"javascript:;\" onclick=\"deleteOption(this)\">" +
+            "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
+            "</a>";
+        @else                                                           {{-- 抛出异常 --}}
+        @endif
 
         /* Ueditor创建 */
         function getUeditor(id, content) {
@@ -127,8 +163,13 @@
                     "" + delButton + "" +
                     "<div class=\"panel-header\" onclick=\"checkRadio(this);\">" +
                     "<div class=\"" + typeClass + "\">" +
-                    "<input type=\"" + type + "\" id=\"option_" + type + "_" + word + "\" name=\"option_" + type + "\"  value=\"" + word + "\">" +
-                    "<label for=\"option_" + type + "_" + word + "\">" + word + "</label>" +
+                    "<input type=\"" + type + "\" id=\"option_" + type + "_" + word + "\" " +
+                        @if(  $context['status']['type'] == 'SingleChoice' )
+                            "name=\"option_" + type + "\"  value=\"" + word + "\">" +
+                        @elseif( $context['status']['type'] == 'MultipleChoice' )
+                            "name=\"option_" + type + "["+ word +"]\"  value=\"" + word + "\">" +
+                        @endif
+                            "<label for=\"option_" + type + "_" + word + "\">" + word + "</label>" +
                     "<span class=\"ml-50 c-error\" id=\"option_error_" + word + "\"></span>" +
                     "<span class=\"ml-50 c-error\" id=\"option_error\"></span>" +
                     "</div>" +
@@ -164,7 +205,8 @@
         <form class="form form-horizontal" method="POST" action="{{ url('admin/question/createQuestion') }}">
             {{ csrf_field() }}
             <input type="hidden" value="{{ $context['status']['type'] }}" name="questionType" id="questionType">
-            <input type="hidden" value="{{ $context['length'] }}" name="length" id="length">
+            <input type="hidden" value="{{ $context['status']['id'] }}" name="questionId" id="questionId">
+            {{--<input type="hidden" value="{{ $context['length'] }}" name="length" id="length">--}}
             <div class="panel panel-secondary-change">
                 <div class="panel-header">
                     <span>试题描述</span>
@@ -174,61 +216,95 @@
                     <script id="description" name="description" type="text/plain"></script>
                 </div>
             </div>
-            @if( $context['status']['type'] == 'SingleChoice')
-                <div class="mt-20" id="option">
-                    {{-- 单选题选项 --}}
-                </div>
-                <input id="addOption" type="button" onclick="addOptions('#option')" class="btn btn-success-outline radius btn-block mt-10" value="添加一个选项">
-                <script>
-                    $(function () {
-                        getUeditor('description', '{!! old('description') !!}');
-                        getUeditor('analysis', '{!! old('description') !!}');
-                        var length = parseInt('{{ $context['length'] }}') || 4;
-                        initOption(65 + length);
-                        @for($i=65;$i<$context['length']+65;$i++)
-                        getUeditor('option_content_' + '{{ chr($i) }}', '{!! old('option')[chr($i)] !!}');
-                        $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
-                        @endfor
-                        $('#option_error').html('{{ $errors->first('option_radio') }}');
-                        // for(var i=65;i<65+length;i++) {
-                        //     var word = String.fromCharCode(i);
-                        // }
-                        // getUeditor('option_content_A');
-                        // getUeditor('option_content_B');
-                        // getUeditor('option_content_C');
-                        // getUeditor('option_content_D');
-                        // initRadio();
-                    });
-                </script>
-                <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content radius">
-                            <div class="modal-header">
-                                <h3 class="modal-title">警告</h3>
-                                <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:;">×</a>
-                            </div>
-                            <div class="modal-body">
-                                <p>确定要删除此选项吗？此操作不可撤回</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-primary" type="button" id="model_true">确定</button>
-                                <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
-                            </div>
+            @if( $context['status']['type'] == 'SingleChoice')      {{-- 单选题 --}}
+            <div class="mt-20" id="option">
+                {{-- 单选题选项 --}}
+            </div>
+            <input id="addOption" type="button" onclick="addOptions('#option')" class="btn btn-success-outline radius btn-block mt-10" value="添加一个选项">
+            <script>
+                $(function () {
+                    getUeditor('description', '{!! old('description') !!}');
+                    getUeditor('analysis', '{!! old('analysis') !!}');
+                            @if(Session::has('_old_input'))
+                    var length = parseInt('{{ count(Session::get('_old_input')['option']) }}');
+                            @else
+                    var length = 4;
+                    @endif
+                    initOption(65 + length);
+                    @for($i=65;$i<(isset(Session::get('_old_input')['option']) ? count(Session::get('_old_input')['option']) : 4) +65;$i++)
+                    getUeditor('option_content_' + '{{ chr($i) }}', '{!! old('option')[chr($i)] !!}');
+                    $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
+                    @endfor
+                    $('#option_error').html('{{ $errors->first('option_radio') }}');
+                });
+            </script>
+            <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content radius">
+                        <div class="modal-header">
+                            <h3 class="modal-title">警告</h3>
+                            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:;">×</a>
+                        </div>
+                        <div class="modal-body">
+                            <p>确定要删除此选项吗？此操作不可撤回</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="button" id="model_true">确定</button>
+                            <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
                         </div>
                     </div>
                 </div>
-            @elseif(  $context['status']['type'] == 'MultipleChoice' )
-            @elseif(  $context['status']['type'] == 'TrueOrFalse' )
-            @elseif(  $context['status']['type'] == 'FillInTheBlank' )
-            @elseif(  $context['status']['type'] == 'ShortAnswer' )
-            @else
-                <div class="flex-center position-ref full-height">
-                    <div class="content">
-                        <div class="title">
-                            Sorry, the page you are looking for could not be found.
+            </div>
+            @elseif(  $context['status']['type'] == 'MultipleChoice' )      {{-- 多选题 --}}
+            <div class="mt-20" id="option">
+                {{-- 多选题选项 --}}
+            </div>
+            <input id="addOption" type="button" onclick="addOptions('#option')" class="btn btn-success-outline radius btn-block mt-10" value="添加一个选项">
+            <script>
+                $(function () {
+                    getUeditor('description', '{!! old('description') !!}');
+                    getUeditor('analysis', '{!! old('analysis') !!}');
+                            @if(Session::has('_old_input'))
+                    var length = parseInt('{{ count(old('option')) }}');
+                            @else
+                    var length = 4;
+                    @endif
+                    initOption(65 + length);
+                    @for($i=65;$i<( null !== old('option') ? count(old('option')) : 4) +65;$i++)
+                    getUeditor('option_content_' + '{{ chr($i) }}', '{!! old('option')[chr($i)] !!}');
+                    $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
+                    @endfor
+                    $('#option_error').html('{{ $errors->first('option_checkbox') }}');
+                });
+            </script>
+            <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content radius">
+                        <div class="modal-header">
+                            <h3 class="modal-title">警告</h3>
+                            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:;">×</a>
+                        </div>
+                        <div class="modal-body">
+                            <p>确定要删除此选项吗？此操作不可撤回</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="button" id="model_true">确定</button>
+                            <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
                         </div>
                     </div>
                 </div>
+            </div>
+            @elseif(  $context['status']['type'] == 'TrueOrFalse' )         {{-- 判断题 --}}
+            @elseif(  $context['status']['type'] == 'FillInTheBlank' )      {{-- 填空题 --}}
+            @elseif(  $context['status']['type'] == 'ShortAnswer' )         {{-- 简答题 --}}
+            @else                                                           {{-- 抛出异常 --}}
+            <div class="flex-center position-ref full-height">
+                <div class="content">
+                    <div class="title">
+                        Sorry, the page you are looking for could not be found.
+                    </div>
+                </div>
+            </div>
             @endif
             <div class="panel panel-secondary-change mt-10">
                 <div class="panel-header">
