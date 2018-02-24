@@ -31,9 +31,7 @@
                 @elseif(  $context['status']['type'] == 'TrueOrFalse' )         {{-- 判断题 --}}
         var type = 'radio';
         var typeClass = 'radio-box';
-        var delButton = "<a class=\"btn btn-danger radius f-r btn-add\" href=\"javascript:;\" onclick=\"deleteOption(this)\">" +
-            "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
-            "</a>";
+        var delButton = "";
                 @elseif(  $context['status']['type'] == 'FillInTheBlank' )      {{-- 填空题 --}}
         var type = 'radio';
         var typeClass = 'radio-box';
@@ -41,8 +39,8 @@
             "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
             "</a>";
                 @elseif(  $context['status']['type'] == 'ShortAnswer' )         {{-- 简答题 --}}
-        var type = 'radio';
-        var typeClass = 'radio-box';
+        var type = '';
+        var typeClass = '';
         var delButton = "<a class=\"btn btn-danger radius f-r btn-add\" href=\"javascript:;\" onclick=\"deleteOption(this)\">" +
             "<i class=\"Hui-iconfont Hui-iconfont-del3\"></i>" +
             "</a>";
@@ -87,9 +85,21 @@
             }
             var divHtml = "<div class=\"panel panel-secondary-change\" data-content=\"" + word + "\" id=\"option_" + word + "\">" +
                 "" + delButton + "" +
-                "<div class=\"panel-header\" onclick=\"checkRadio(this);\">" +
+                "<div class=\"panel-header\" " +
+                @if($context['status']['type'] == 'SingleChoice' || $context['status']['type'] == 'TrueOrFalse' || $context['status']['type'] == 'MultipleChoice')
+                "onclick=\"checkRadio(this);" +
+                @endif
+                "\">" +
                 "<div class=\"" + typeClass + "\">\n" +
-                "<input type=\"" + type + "\" id=\"option_" + type + "_" + word + "\" name=\"option_" + type + "\"  value=\"" + word + "\">\n" +
+                @if($context['status']['type'] == 'SingleChoice' || $context['status']['type'] == 'TrueOrFalse' || $context['status']['type'] == 'MultipleChoice')
+                "<input type=\"" + type + "\" id=\"option_" + type + "_" + word + "\"" +
+                    //单选多选区分
+                    @if(  $context['status']['type'] == 'SingleChoice' || $context['status']['type'] == 'TrueOrFalse')
+                        "name=\"option_" + type + "\"  value=\"" + word + "\">" +
+                    @elseif( $context['status']['type'] == 'MultipleChoice' )
+                        "name=\"option_" + type + "[" + word + "]\"  value=\"" + word + "\">" +
+                    @endif
+                @endif
                 "<label for=\"option_" + type + "_" + word + "\">" + word + "</label>" +
                 "</div>" +
                 "</div>" +
@@ -144,8 +154,13 @@
         /* 判断单选数量保证至少有三个选项 */
         function singleChoiceCount() {
             var count = $('#option').find('.panel-secondary-change').length;
-            if (count == 3) {
-                $.Huimodalalert('选项数量不可小于3个', 2000);
+            @if(  $context['status']['type'] == 'ShortAnswer' )
+            var minCount = 1;
+            @else
+            var minCount = 3;
+            @endif
+            if(count == minCount){
+                $.Huimodalalert('答案数量不可小于'+ minCount +'个', 2000);
                 return false;
             } else {
                 return true;
@@ -161,14 +176,21 @@
                 var word = String.fromCharCode(i);
                 var divHtml = "<div class=\"panel panel-secondary-change\" data-content=\"" + word + "\" id=\"option_" + word + "\">" +
                     "" + delButton + "" +
-                    "<div class=\"panel-header\" onclick=\"checkRadio(this);\">" +
+                    "<div class=\"panel-header\" " +
+                    @if($context['status']['type'] == 'SingleChoice' || $context['status']['type'] == 'TrueOrFalse' || $context['status']['type'] == 'MultipleChoice')
+                    "onclick=\"checkRadio(this);" +
+                    @endif
+                    "\">" +
                     "<div class=\"" + typeClass + "\">" +
+                    @if($context['status']['type'] == 'SingleChoice' || $context['status']['type'] == 'TrueOrFalse' || $context['status']['type'] == 'MultipleChoice')
                     "<input type=\"" + type + "\" id=\"option_" + type + "_" + word + "\" " +
-                        @if(  $context['status']['type'] == 'SingleChoice' )
+                        //单选多选区分
+                        @if(  $context['status']['type'] == 'SingleChoice' || $context['status']['type'] == 'TrueOrFalse')
                             "name=\"option_" + type + "\"  value=\"" + word + "\">" +
                         @elseif( $context['status']['type'] == 'MultipleChoice' )
-                            "name=\"option_" + type + "["+ word +"]\"  value=\"" + word + "\">" +
+                            "name=\"option_" + type + "[" + word + "]\"  value=\"" + word + "\">" +
                         @endif
+                    @endif
                             "<label for=\"option_" + type + "_" + word + "\">" + word + "</label>" +
                     "<span class=\"ml-50 c-error\" id=\"option_error_" + word + "\"></span>" +
                     "<span class=\"ml-50 c-error\" id=\"option_error\"></span>" +
@@ -236,6 +258,7 @@
                     $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
                     @endfor
                     $('#option_error').html('{{ $errors->first('option_radio') }}');
+                    $('#option_{{ old('option_radio') }}').find('div').eq(0).click();
                 });
             </script>
             <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -264,9 +287,9 @@
                 $(function () {
                     getUeditor('description', '{!! old('description') !!}');
                     getUeditor('analysis', '{!! old('analysis') !!}');
-                            @if(Session::has('_old_input'))
+                    @if(Session::has('_old_input'))
                     var length = parseInt('{{ count(old('option')) }}');
-                            @else
+                    @else
                     var length = 4;
                     @endif
                     initOption(65 + length);
@@ -275,6 +298,11 @@
                     $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
                     @endfor
                     $('#option_error').html('{{ $errors->first('option_checkbox') }}');
+                    @if( null != old('option_checkbox'))
+                        @foreach( old('option_checkbox') as $item => $value)
+                        $('#option_{{ $item }}').find('div').eq(0).click();
+                        @endforeach
+                    @endif
                 });
             </script>
             <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -295,8 +323,69 @@
                 </div>
             </div>
             @elseif(  $context['status']['type'] == 'TrueOrFalse' )         {{-- 判断题 --}}
+            <div class="mt-20" id="option">
+                {{-- 判断题选项 --}}
+            </div>
+            <script>
+                $(function () {
+                    getUeditor('description', '{!! old('description') !!}');
+                    getUeditor('analysis', '{!! old('analysis') !!}');
+                    var length = 2;
+                    initOption(65 + length);
+                    @for($i=65;$i<67;$i++)
+                    getUeditor('option_content_' + '{{ chr($i) }}', '{!! old('option')[chr($i)] !!}');
+                    $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
+                    @endfor
+                    $('#option_error').html('{{ $errors->first('option_radio') }}');
+                    $('#option_{{ old('option_radio') }}').find('div').eq(0).click();
+                });
+            </script>
             @elseif(  $context['status']['type'] == 'FillInTheBlank' )      {{-- 填空题 --}}
+                
             @elseif(  $context['status']['type'] == 'ShortAnswer' )         {{-- 简答题 --}}
+            <div class="mt-20" id="option">
+                {{-- 简答题选项 --}}
+            </div>
+            <input id="addOption" type="button" onclick="addOptions('#option')" class="btn btn-success-outline radius btn-block mt-10" value="添加一个选项">
+            <script>
+                $(function () {
+                    getUeditor('description', '{!! old('description') !!}');
+                    getUeditor('analysis', '{!! old('analysis') !!}');
+                    @if(Session::has('_old_input'))
+                    var length = parseInt('{{ count(old('option')) }}');
+                    @else
+                    var length = 1;
+                    @endif
+                    initOption(65 + length);
+                    @for($i=65;$i<( null !== old('option') ? count(old('option')) : 1) +65;$i++)
+                    getUeditor('option_content_' + '{{ chr($i) }}', '{!! old('option')[chr($i)] !!}');
+                    $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
+                    @endfor
+                    $('#option_error').html('{{ $errors->first('option_checkbox') }}');
+                    @if( null != old('option_checkbox'))
+                    @foreach( old('option_checkbox') as $item => $value)
+                    $('#option_{{ $item }}').find('div').eq(0).click();
+                    @endforeach
+                    @endif
+                });
+            </script>
+            <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content radius">
+                        <div class="modal-header">
+                            <h3 class="modal-title">警告</h3>
+                            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:;">×</a>
+                        </div>
+                        <div class="modal-body">
+                            <p>确定要删除此选项吗？此操作不可撤回</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="button" id="model_true">确定</button>
+                            <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             @else                                                           {{-- 抛出异常 --}}
             <div class="flex-center position-ref full-height">
                 <div class="content">

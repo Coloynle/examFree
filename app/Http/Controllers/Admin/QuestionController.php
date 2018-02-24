@@ -58,7 +58,7 @@ class QuestionController extends Controller
     public function createQuestion(Request $request)
     {
         $parameters = $request->all();
-        dd($parameters);
+//        dd($parameters);
 
         //验证规则
         $vaildatedData = [];
@@ -73,8 +73,11 @@ class QuestionController extends Controller
             'max' => ':attribute 长度不可大于10000',
         ];
 
-        //单选题
-        if ($parameters['questionType'] == 'SingleChoice') {
+        $vaildatedData['description'] = "bail|required|max:10000";
+        $vaildatedData['analysis'] = "bail|required|max:10000";
+
+
+        if ($parameters['questionType'] == 'SingleChoice') {           //单选题
             //验证规则数组
             foreach ($parameters['option'] as $item => $value) {
                 $key = 'option.' . $item;
@@ -82,8 +85,6 @@ class QuestionController extends Controller
                 $vaildateName[$key] = '选项' . $item . '描述';
 
             }
-            $vaildatedData['description'] = "bail|required|max:10000";
-            $vaildatedData['analysis'] = "bail|required|max:10000";
             $vaildatedData['option_radio'] = "bail|required";
             $vaildateName['option_radio'] = '试题选项';
 
@@ -101,11 +102,8 @@ class QuestionController extends Controller
                 $key = 'option.' . $item;
                 $vaildatedData[$key] = "bail|required|max:10000";
                 $vaildateName[$key] = '选项' . $item . '描述';
-
+                $vaildatedData['option_checkbox.'.$item] = "bail|required";
             }
-            $vaildatedData['description'] = "bail|required|max:10000";
-            $vaildatedData['analysis'] = "bail|required|max:10000";
-            $vaildatedData['option_checkbox'] = "bail|required";
             $vaildateName['option_checkbox'] = '试题选项';
 
             //验证表单
@@ -121,11 +119,35 @@ class QuestionController extends Controller
             $parameters['option_checkbox'] = serialize($parameters['option_checkbox']);
 
         } elseif ($parameters['questionType'] == 'TrueOrFalse') {         //判断题
+            foreach ($parameters['option'] as $item => $value) {
+                $key = 'option.' . $item;
+                $vaildatedData[$key] = "bail|required|max:10000";
+                $vaildateName[$key] = '选项' . $item . '描述';
+
+            }
+            $vaildatedData['option_radio'] = "bail|required";
+            $vaildateName['option_radio'] = '试题选项';
+            //验证表单
+            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
+
+            if (!isset($parameters['option'][$parameters['option_radio']])) {
+                echo '正确答案不存在';
+                return;
+            }
             $type = 'radio';
         } elseif ($parameters['questionType'] == 'FillInTheBlank') {      //填空题
 
         } elseif ($parameters['questionType'] == 'ShortAnswer') {         //简答题
+            foreach ($parameters['option'] as $item => $value) {
+                $key = 'option.' . $item;
+                $vaildatedData[$key] = "bail|required|max:10000";
+                $vaildateName[$key] = '答案' . $item . '描述';
 
+            }
+            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
+
+            $parameters['option_short'] = 'ALL';
+            $type = 'short';
         } else {                                                          //抛出异常
             return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with('error', '未知的试题类型');
         }
@@ -154,6 +176,7 @@ class QuestionController extends Controller
             $Question = new Question;
             $Question->create_user_id = Auth::guard('admin')->user()->id;
             $Question->type = $parameters['questionType'];
+            $Question->update_user_id = 0;
         }
 
 
