@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['prefix' => 'admin/question'], function () {
     Route::get('addQuestion/{type}/{id?}', 'Admin\QuestionController@addQuestion');
     Route::post('createQuestion/', 'Admin\QuestionController@createQuestion');
+    Route::get('manageQuestion/', 'Admin\QuestionController@manageQuestion');
     Route::get('changeQuestion/{id}', 'Admin\QuestionController@changeQuestion');
 
 });

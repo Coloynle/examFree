@@ -37,10 +37,18 @@
 
 {{-- 刷新栏 --}}
 <nav class="breadcrumb">
-    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <i class="Hui-iconfont">&#xe67f;</i>
     {{--循环通过配置文件获取目录位置--}}
-    @foreach($context['list'] as $key => $val)
-    <span class="c-gray en">&gt;</span> {{ config('exam.list_name.'.$val,'error') }}
+    {{-- 做一个标识第一个不显示 > --}}
+    <?php $first = false; ?>
+    @foreach(explode('/',Request::getPathInfo()) as $key => $val)
+        @if(config('exam.list_name.'.$val) or false)
+            @if( $first )
+                <span class="c-gray en">&gt;</span>
+            @endif
+            {{ config('exam.list_name.'.$val,'error') }}
+            <?php $first = true; ?>
+        @endif
     @endforeach
 
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" >

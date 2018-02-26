@@ -12,8 +12,10 @@ return [
     * 路径列表对应名称
     */
     'list_name' => [
+        'admin' => '首页',
         'question' => '试题管理',
         'addQuestion' => '添加试题',
+        'manageQuestion' => '管理试题',
     ],
 
     /*

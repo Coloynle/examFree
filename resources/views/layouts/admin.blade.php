@@ -100,7 +100,7 @@
                 <dd>
                     <ul>
                         <li><a data-href="{{ url('admin/question/addQuestion/SingleChoice/') }}" data-title="添加试题" href="javascript:void(0)">添加试题</a></li>
-                        <li><a data-href="{{ url('admin/question/changeQuestion/1') }}" data-title="管理试题" href="javascript:void(0)">管理试题</a></li>
+                        <li><a data-href="{{ url('admin/question/manageQuestion/') }}" data-title="管理试题" href="javascript:void(0)">管理试题</a></li>
                         <li><a data-href="article-list.html" data-title="导入试题" href="javascript:void(0)">导入试题</a></li>
                     </ul>
                 </dd>

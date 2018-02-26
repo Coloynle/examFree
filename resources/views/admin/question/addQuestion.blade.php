@@ -341,7 +341,7 @@
                 });
             </script>
             @elseif(  $context['status']['type'] == 'FillInTheBlank' )      {{-- 填空题 --}}
-                
+
             @elseif(  $context['status']['type'] == 'ShortAnswer' )         {{-- 简答题 --}}
             <div class="mt-20" id="option">
                 {{-- 简答题选项 --}}

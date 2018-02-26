@@ -38,12 +38,8 @@ class QuestionController extends Controller
     public function addQuestion($type, $id = false)
     {
         $context = [
-            'list' => ['question', 'addQuestion'],
-            'status' => ['type' => $type, 'id' => $id]
+            'status' => ['type' => $type, 'id' => $id]      //类型 和 试题ID
         ];
-//        $_old_input = [
-//            'description' => 'asd',
-//        ];
         return view('admin/question/addQuestion', ['context' => $context]);
     }
 
@@ -186,6 +182,52 @@ class QuestionController extends Controller
         $Question->answer = $parameters['option_' . $type];
         $Question->answer_info = serialize($parameters['option']);
         $Question->save();
+    }
+
+
+    public function manageQuestion(Request $request){
+        $params = [
+            'id' =>Input::get('id',''),
+            'description' =>Input::get('description',''),
+            'create_user_name' =>Input::get('create_user_name',''),
+            'update_user_name' =>Input::get('update_user_name',''),
+            'created_time_start' =>Input::get('created_time_start',''),
+            'created_time_end' =>Input::get('created_time_end',''),
+            'updated_time_start' =>Input::get('updated_time_start',''),
+            'updated_time_end' =>Input::get('updated_time_end',''),
+            'order_by_id' =>Input::get('order_by_id',''),
+            'order_by_description' =>Input::get('order_by_description',''),
+            'order_by_create_user_name' =>Input::get('order_by_create_user_name',''),
+            'order_by_update_user_name' =>Input::get('order_by_update_user_name',''),
+            'order_by_created_time' =>Input::get('order_by_created_time',''),
+            'order_by_updated_time' =>Input::get('order_by_updated_time',''),
+        ];
+
+        $context = [
+            ];
+        //关联查询admins表,获取name,并进行分页
+//        $questions = Question::with(['getCreateUserName:id,name','getUpdateUserName:id,name'])->paginate(1);
+        $questions = new Question;
+        $questions = $questions->searchByParams([
+            'id' => $params['id'],
+            'description' => $params['description'],
+            'create_user_name' => $params['create_user_name'],
+            'update_user_name' => $params['update_user_name'],
+            'created_time_start' => $params['created_time_start'],
+            'created_time_end' => $params['created_time_end'],
+            'updated_time_start' => $params['updated_time_start'],
+            'updated_time_end' => $params['updated_time_end'],
+            'order_by_id' => $params['order_by_id'],
+            'order_by_description' => $params['order_by_description'],
+            'order_by_create_user_name' => $params['order_by_create_user_name'],
+            'order_by_update_user_name' => $params['order_by_update_user_name'],
+            'order_by_created_time' => $params['order_by_created_time'],
+            'order_by_updated_time' => $params['order_by_updated_time'],
+        ]);
+        return view('admin/question/manageQuestion',[
+//            'context' => $context,
+            'questions' => $questions,
+        ]);
     }
 
     /**
