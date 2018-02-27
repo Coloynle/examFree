@@ -189,6 +189,7 @@ class QuestionController extends Controller
         $params = [
             'id' =>Input::get('id',''),
             'description' =>Input::get('description',''),
+            'type' =>Input::get('type',''),
             'create_user_name' =>Input::get('create_user_name',''),
             'update_user_name' =>Input::get('update_user_name',''),
             'created_time_start' =>Input::get('created_time_start',''),
@@ -197,6 +198,7 @@ class QuestionController extends Controller
             'updated_time_end' =>Input::get('updated_time_end',''),
             'order_by_id' =>Input::get('order_by_id',''),
             'order_by_description' =>Input::get('order_by_description',''),
+            'order_by_type' =>Input::get('order_by_type',''),
             'order_by_create_user_name' =>Input::get('order_by_create_user_name',''),
             'order_by_update_user_name' =>Input::get('order_by_update_user_name',''),
             'order_by_created_time' =>Input::get('order_by_created_time',''),
@@ -211,6 +213,7 @@ class QuestionController extends Controller
         $questions = $questions->searchByParams([
             'id' => $params['id'],
             'description' => $params['description'],
+            'type' => $params['type'],
             'create_user_name' => $params['create_user_name'],
             'update_user_name' => $params['update_user_name'],
             'created_time_start' => $params['created_time_start'],
@@ -224,6 +227,7 @@ class QuestionController extends Controller
             'order_by_created_time' => $params['order_by_created_time'],
             'order_by_updated_time' => $params['order_by_updated_time'],
         ]);
+        dd($questions);
         return view('admin/question/manageQuestion',[
 //            'context' => $context,
             'questions' => $questions,

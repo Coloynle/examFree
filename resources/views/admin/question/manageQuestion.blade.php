@@ -11,8 +11,9 @@
     <div class="page-container">
         <div class="mt-10">
             <div class="cl">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 100px" placeholder="试题ID">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 200px" placeholder="试题详情">
+                <input type="text" name="id" class="input-text radius f-l mr-10 mt-10" style="width: 100px" placeholder="试题ID">
+                <input type="text" name="description" class="input-text radius f-l mr-10 mt-10" style="width: 200px" placeholder="试题详情">
+                <input type="hidden" name="type">
                 <div class="btn-group f-l mr-10 mt-10">
                     <a class="btn btn-primary radius">全部</a>
                     <a class="btn btn-default radius">单选题</a>
@@ -23,13 +24,13 @@
                 </div>
             </div>
             <div class="cl">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 200px" placeholder="创建人姓名">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="创建起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'create_max\')||\'%y-%M-%d\'}' })" id="create_min" name="">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="创建结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'create_min\')}',maxDate:'%y-%M-%d' })" id="create_max" name="">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 200px" placeholder="修改人姓名">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="修改起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'create_max\')||\'%y-%M-%d\'}' })" id="create_min" name="">
-                <input type="text" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="修改结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'create_min\')}',maxDate:'%y-%M-%d' })" id="create_max" name="">
-                <input type="button" class="btn btn-primary radius f-l mr-10 mt-10" value="搜索">
+                <input type="text" name="create_user_name" class="input-text radius f-l mr-10 mt-10" style="width: 200px" placeholder="创建人姓名">
+                <input type="text" name="created_time_start" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="创建起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'create_max\')||\'%y-%M-%d\'}' })" id="create_min">
+                <input type="text" name="created_time_end" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="创建结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'create_min\')}',maxDate:'%y-%M-%d' })" id="create_max">
+                <input type="text" name="update_user_name" class="input-text radius f-l mr-10 mt-10" style="width: 200px" placeholder="修改人姓名">
+                <input type="text" name="updated_time_start" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="修改起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'update_max\')||\'%y-%M-%d\'}' })" id="update_min">
+                <input type="text" name="updated_time_end" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="修改结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'update_min\')}',maxDate:'%y-%M-%d' })" id="update_max">
+                <input type="button" class="btn btn-primary radius f-l mr-10 mt-10" onclick="searchCondition();" value="搜索">
                 <input type="button" class="btn btn-primary radius f-l mr-10 mt-10" value="重置">
             </div>
         </div>
@@ -87,4 +88,24 @@
             </div>
         </div>
     </div>
+    <script>
+        function searchCondition(){
+            var params = {
+                'id' : $('input[name=id]').val(),
+                'description' : $('input[name=description]').val(),
+                'type' : $('input[name=type]').val(),
+                'create_user_name' : $('input[name=create_user_name]').val(),
+                'update_user_name' : $('input[name=update_user_name]').val(),
+                'created_time_start' : $('input[name=created_time_start]').val(),
+                'created_time_end' : $('input[name=created_time_end]').val(),
+                'updated_time_start' : $('input[name=updated_time_start]').val(),
+                'updated_time_end' : $('input[name=updated_time_end]').val()
+            };
+            $.ajax({
+                'url' : '{{ url('admin/question/manageQuestion/') }}',
+                'data' : params,
+                'type' : 'GET',
+            })
+        }
+    </script>
 @endsection
