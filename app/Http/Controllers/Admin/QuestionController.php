@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Admin;
+use Illuminate\Contracts\Pagination\Paginator;
 use App\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -227,10 +229,10 @@ class QuestionController extends Controller
             'order_by_created_time' => $params['order_by_created_time'],
             'order_by_updated_time' => $params['order_by_updated_time'],
         ]);
-        dd($questions);
         return view('admin/question/manageQuestion',[
 //            'context' => $context,
             'questions' => $questions,
+            'params' => $params,
         ]);
     }
 
@@ -242,6 +244,10 @@ class QuestionController extends Controller
      */
     public function changeQuestion()
     {
+        $admin = new Admin();
+        $admin = $admin->select('id')->where('name','=','Coloynle')->first();
+        dd($admin->id);
+        exit;
         $_old_input = [
             'description' => 'asd',
 //            'analysis' => 'asd',

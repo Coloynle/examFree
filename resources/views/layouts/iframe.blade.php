@@ -58,6 +58,7 @@
 {{-- 刷新栏END --}}
 
 @yield('content')
+{{--<script type="text/javascript" src="{{ asset('js/app.js') }}"></script>--}}
 <script type="text/javascript" src="{{ asset('h-ui/lib/layer/2.4/layer.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/lib/jquery.validation/1.14.0/jquery.validate.js') }}"></script>
 <script type="text/javascript" src="{{ asset('h-ui/lib/jquery.validation/1.14.0/validate-methods.js') }}"></script>
