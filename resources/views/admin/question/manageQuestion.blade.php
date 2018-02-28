@@ -39,25 +39,23 @@
         </div>
         <div class="mt-20 cl">
             <div id="questionPage">
-                <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive dataTable">
                     <thead>
                     <tr class="text-c">
                         <th width="25"><input type="checkbox" name="" value=""></th>
-                        <th width="80">ID</th>
+                        <th width="80" class="sorting" id="order_by_id" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">ID</th>
                         <th>详情</th>
-                        <th width="80">题型</th>
-                        <th width="80">创建人</th>
-                        <th width="120">创建时间</th>
-                        <th width="80">修改人</th>
-                        <th width="120">修改时间</th>
-                        <th width="75">浏览次数</th>
-                        <th width="60">发布状态</th>
+                        <th width="80" class="sorting" id="order_by_type" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">题型</th>
+                        <th width="80" class="sorting" id="order_by_create_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">创建人</th>
+                        <th width="120" class="sorting" id="order_by_created_time" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">创建时间</th>
+                        <th width="80" class="sorting" id="order_by_update_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">修改人</th>
+                        <th width="120" class="sorting" id="order_by_updated_time" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">修改时间</th>
+                        <th width="75" class="sorting" id="order_by_create_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">浏览次数</th>
+                        <th width="60" class="sorting" id="order_by_create_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">发布状态</th>
                         <th width="120">操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {{--{{ dd($questions) }}--}}
-
                     @foreach( $questions as $item => $value )
                         {{--{{ dd($value) }}--}}
                         <tr class="text-c">
@@ -118,6 +116,10 @@
             })
             $('input[name=type]').val('');
             $('#searchFrom').submit();
+        }
+
+        function orderPage(that,href) {
+
         }
 
         //页面加载完毕后运行,保证试题类型选择样式正确

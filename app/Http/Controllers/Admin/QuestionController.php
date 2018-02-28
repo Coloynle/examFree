@@ -223,7 +223,7 @@ class QuestionController extends Controller
             'updated_time_start' => $params['updated_time_start'],
             'updated_time_end' => $params['updated_time_end'],
             'order_by_id' => $params['order_by_id'],
-            'order_by_description' => $params['order_by_description'],
+            'order_by_type' => $params['order_by_type'],
             'order_by_create_user_name' => $params['order_by_create_user_name'],
             'order_by_update_user_name' => $params['order_by_update_user_name'],
             'order_by_created_time' => $params['order_by_created_time'],
