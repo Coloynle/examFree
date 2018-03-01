@@ -63,17 +63,17 @@
                         <tr class="text-c">
                             <td><input type="checkbox" value="{{ $value['id'] }}" name="questionId"></td>
                             <td>{{ $value['id'] }}</td>
-                            <td class="text-l">
+                            <td class="text-l text-overflow">
                                 <u style="cursor:pointer" class="text-primary" onClick="article_edit('查看','article-zhang.html','10001')" title="查看">
                                     {{-- 使用 strip_tags 去除字符串中的HTML标识 --}}
                                     {{ strip_tags($value['description']) }}
                                 </u>
                             </td>
-                            <td>{{ config('exam.question_type.'.$value['type'],'未知') }}</td>
-                            <td>{{ $value['getCreateUserName']['name'] }}</td>
-                            <td>{{ $value['created_at'] }}</td>
-                            <td>{{ $value['getUpdateUserName']['name'] or '无'}}</td>
-                            <td>{{ $value['updated_at'] }}</td>
+                            <td title="{{ config('exam.question_type.'.$value['type'],'未知') }}">{{ config('exam.question_type.'.$value['type'],'未知') }}</td>
+                            <td title="{{ $value['getCreateUserName']['name'] }}">{{ $value['getCreateUserName']['name'] }}</td>
+                            <td title="{{ $value['created_at'] }}">{{ $value['created_at'] }}</td>
+                            <td title="{{ $value['getUpdateUserName']['name'] or '无'}}">{{ $value['getUpdateUserName']['name'] or '无'}}</td>
+                            <td title="{{ $value['updated_at'] }}">{{ $value['updated_at'] }}</td>
                             <td>21212</td>
                             <td class="td-status"><span class="label label-success radius">已发布</span></td>
                             <td class="f-14 td-manage">
