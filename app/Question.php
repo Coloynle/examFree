@@ -89,7 +89,33 @@ class Question extends Model
         if(!empty($params['updated_time_end'])){
             $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
         }
-        $question = $select->with(['getCreateUserName:id,name','getUpdateUserName:id,name'])->paginate(1)->appends($params);
+        //试题ID排序
+        if(!empty($params['order_by_id'])){
+            $select = $select->order('id','desc');
+            $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
+        }
+        //试题类型排序
+        if(!empty($params['order_by_type'])){
+            $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
+        }
+        //试题创建者排序
+        if(!empty($params['order_by_create_user_name'])){
+            $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
+        }
+        //试题修改者排序
+        if(!empty($params['order_by_update_user_name'])){
+            $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
+        }
+        //试题创建时间排序
+        if(!empty($params['order_by_created_time'])){
+            $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
+        }
+        //试题修改时间排序
+        if(!empty($params['order_by_updated_time'])){
+            $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
+        }
+
+        $question = $select->with(['getCreateUserName:id,name','getUpdateUserName:id,name'])->paginate(10)->appends($params);
         return $question;
     }
 }
