@@ -43,15 +43,19 @@
                     <thead>
                     <tr class="text-c">
                         <th width="25"><input type="checkbox" name="" value=""></th>
-                        <th width="80" class="sorting" id="order_by_id" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">ID</th>
+                        <th width="80" class="sorting{{ !empty($params['order_by_id']) ? '_'.$params['order_by_id'] : '' }}" id="order_by_id" data-order="{{ $params['order_by_id'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">ID</th>
                         <th>详情</th>
-                        <th width="80" class="sorting" id="order_by_type" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">题型</th>
-                        <th width="80" class="sorting" id="order_by_create_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">创建人</th>
-                        <th width="120" class="sorting" id="order_by_created_time" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">创建时间</th>
-                        <th width="80" class="sorting" id="order_by_update_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">修改人</th>
-                        <th width="120" class="sorting" id="order_by_updated_time" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">修改时间</th>
-                        <th width="75" class="sorting" id="order_by_create_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">浏览次数</th>
-                        <th width="60" class="sorting" id="order_by_create_user_name" data-order="" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">发布状态</th>
+                        <th width="80" class="sorting{{ !empty($params['order_by_type']) ? '_'.$params['order_by_type'] : '' }}" id="order_by_type" data-order="{{ $params['order_by_type'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">题型</th>
+                        <th width="80" class="sorting{{ !empty($params['order_by_create_user_name']) ? '_'.$params['order_by_create_user_name'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_create_user_name'] }}" onclick="orderPage(this,'{{ $questions->url
+                        ($questions->currentPage()) }}')">创建人</th>
+                        <th width="120" class="sorting{{ !empty($params['order_by_created_time']) ? '_'.$params['order_by_created_time'] : '' }}" id="order_by_created_time" data-order="{{ $params['order_by_created_time'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage())
+                        }}')">创建时间</th>
+                        <th width="80" class="sorting{{ !empty($params['order_by_update_user_name']) ? '_'.$params['order_by_update_user_name'] : '' }}" id="order_by_update_user_name" data-order="{{ $params['order_by_update_user_name'] }}" onclick="orderPage(this,'{{ $questions->url
+                        ($questions->currentPage()) }}')">修改人</th>
+                        <th width="120" class="sorting{{ !empty($params['order_by_updated_time']) ? '_'.$params['order_by_updated_time'] : '' }}" id="order_by_updated_time" data-order="{{ $params['order_by_updated_time'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage())
+                        }}')">修改时间</th>
+{{--                        <th width="75" class="sorting{{ !empty($params['order_by_id']) ? '_'.$params['order_by_id'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_id'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">浏览次数</th>--}}
+{{--                        <th width="60" class="sorting{{ !empty($params['order_by_id']) ? '_'.$params['order_by_id'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_id'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">发布状态</th>--}}
                         <th width="120">操作</th>
                     </tr>
                     </thead>
@@ -72,8 +76,8 @@
                             <td title="{{ $value['created_at'] }}">{{ $value['created_at'] }}</td>
                             <td title="{{ $value['getUpdateUserName']['name'] or '无'}}">{{ $value['getUpdateUserName']['name'] or '无'}}</td>
                             <td title="{{ $value['updated_at'] }}">{{ $value['updated_at'] }}</td>
-                            <td>21212</td>
-                            <td class="td-status"><span class="label label-success radius">已发布</span></td>
+                            {{--<td>21212</td>--}}
+                            {{--<td class="td-status"><span class="label label-success radius">已发布</span></td>--}}
                             <td class="f-14 td-manage">
                                 <a style="text-decoration:none" onClick="article_stop(this,'10001')" href="javascript:;" title="下架">
                                     <i class="Hui-iconfont">&#xe6de;</i>
@@ -118,7 +122,24 @@
             $('#searchFrom').submit();
         }
 
+        //排序分页方法 刷新页面
         function orderPage(that,href) {
+            var order = $(that).data('order');
+            var key = $(that).attr('id');
+            if(order == ''){
+                $(that).data('order','desc');
+                $(that).attr('class','sorting_desc');
+                window.location.href = href+'&'+key+'=desc';
+            }else if(order == 'desc'){
+                $(that).data('order','asc');
+                $(that).attr('class','sorting_asc');
+                window.location.href = href+'&'+key+'=asc';
+            }else if(order == 'asc'){
+                $(that).data('order','');
+                $(that).attr('class','sorting');
+                window.location.href = href+'&'+key+'=';
+            }
+
 
         }
 
