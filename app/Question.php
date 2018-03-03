@@ -3,10 +3,20 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
-    //
+    //启用软删除
+    use SoftDeletes;
+
+    /**
+     * 需要被转换成日期的属性。
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -44,10 +54,10 @@ class Question extends Model
      *
      * @function searchByParams
      * @param array $params
-     * @return Question
+     * @return \Illuminate\Database\Eloquent\Builder|static
      * @author CJ
      */
-    public function searchByParams($params = []){
+    private function searchByParams($params = []){
         $select = new Question();
         //试题ID条件
         if(!empty($params['id'])){
@@ -113,7 +123,22 @@ class Question extends Model
         if(!empty($params['order_by_updated_time'])){
             $select = $select->orderBy('updated_at',$params['order_by_updated_time']);
         }
-        $question = $select->with(['getCreateUserName:id,name','getUpdateUserName:id,name'])->paginate(10)->appends($params);
+        $question = $select->with(['getCreateUserName:id,name','getUpdateUserName:id,name']);
         return $question;
+    }
+
+    /**
+     * 获取分页结果
+     * @function pageResult
+     * @param array $params
+     * @return $this
+     * @author CJ
+     */
+    public function pageResult($params = []){
+        return self::searchByParams($params)->paginate(10)->appends($params);
+    }
+
+    public function searchDelete($params = []){
+        return self::searchByParams($params)->delete();
     }
 }

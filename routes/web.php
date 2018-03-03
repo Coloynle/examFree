@@ -49,5 +49,5 @@ Route::group(['prefix' => 'admin/question'], function () {
     Route::get('manageQuestion/', 'Admin\QuestionController@manageQuestion');
     Route::post('manageQuestion/', 'Admin\QuestionController@manageQuestion');
     Route::get('changeQuestion/{id}', 'Admin\QuestionController@changeQuestion');
-
+    Route::post('deleteQuestion/{id?}', 'Admin\QuestionController@deleteQuestion');
 });

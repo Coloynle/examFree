@@ -186,9 +186,16 @@ class QuestionController extends Controller
         $Question->save();
     }
 
-
-    public function manageQuestion(Request $request){
-        $params = [
+    /**
+     * 获得params数组
+     *
+     * @function initParams
+     * @return array
+     * @author CJ
+     */
+    private function initParams(){
+        //初始化params
+        return [
             'id' =>Input::get('id',''),
             'description' =>Input::get('description',''),
             'type' =>Input::get('type',''),
@@ -206,34 +213,64 @@ class QuestionController extends Controller
             'order_by_created_time' =>Input::get('order_by_created_time',''),
             'order_by_updated_time' =>Input::get('order_by_updated_time',''),
         ];
+    }
 
-        $context = [
-            ];
+    /**
+     * 管理试题
+     *
+     * @function manageQuestion
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @author CJ
+     */
+    public function manageQuestion(Request $request){
         //关联查询admins表,获取name,并进行分页
-//        $questions = Question::with(['getCreateUserName:id,name','getUpdateUserName:id,name'])->paginate(1);
         $questions = new Question;
-        $questions = $questions->searchByParams([
-            'id' => $params['id'],
-            'description' => $params['description'],
-            'type' => $params['type'],
-            'create_user_name' => $params['create_user_name'],
-            'update_user_name' => $params['update_user_name'],
-            'created_time_start' => $params['created_time_start'],
-            'created_time_end' => $params['created_time_end'],
-            'updated_time_start' => $params['updated_time_start'],
-            'updated_time_end' => $params['updated_time_end'],
-            'order_by_id' => $params['order_by_id'],
-            'order_by_type' => $params['order_by_type'],
-            'order_by_create_user_name' => $params['order_by_create_user_name'],
-            'order_by_update_user_name' => $params['order_by_update_user_name'],
-            'order_by_created_time' => $params['order_by_created_time'],
-            'order_by_updated_time' => $params['order_by_updated_time'],
-        ]);
+        $questions = $questions->pageResult(self::initParams());
         return view('admin/question/manageQuestion',[
-//            'context' => $context,
             'questions' => $questions,
-            'params' => $params,
+            'params' => self::initParams()
         ]);
+    }
+
+    /**
+     * 删除试题方法
+     *
+     * @function deleteQuestion
+     * @return array
+     * @author CJ
+     */
+    public function deleteQuestion(){
+        //获取试题类型
+        $deleteType = Input::get('type','');
+        //是否删除成功
+        $TFSuccess = false;
+        if($deleteType == 0) {
+            $questionsId = Input::get('questionsId','');
+            $questionsId = explode(',', $questionsId);
+            $countQuestionsId = count($questionsId);
+
+            $questions = new Question();
+            $countDestroy = $questions::destroy($questionsId);
+            //判断删除成功数量是否等于需要删除的数量
+            $TFSuccess = $countDestroy == $countQuestionsId;
+        }else if($deleteType == 1){
+            $params = Input::get('params');
+            $params = unserialize($params);
+            $questions = new Question();
+            $TFSuccess = $questions->searchDelete($params);
+        }
+        if ($TFSuccess) {
+            return [
+                'code' => 0,
+                'message' => '删除成功',
+            ];
+        } else {
+            return [
+                'code' => -1,
+                'message' => '删除失败',
+            ];
+        }
     }
 
     /**
@@ -259,5 +296,16 @@ class QuestionController extends Controller
             ],
         ];
         return redirect('/admin/question/addQuestion/SingleChoice/1')->with('_old_input', $_old_input);
+    }
+
+    /**
+     * 恢复所有删除试题
+     *
+     * @function restoreQuestion
+     * @author CJ
+     */
+    public function restoreQuestion(){
+        Question::withTrashed()->restore();
+        return;
     }
 }
