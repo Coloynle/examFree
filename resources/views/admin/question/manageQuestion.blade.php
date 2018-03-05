@@ -44,18 +44,18 @@
                     <tr class="text-c">
                         <th width="25"><input type="checkbox" name="" value=""></th>
                         <th width="80" class="sorting{{ !empty($params['order_by_id']) ? '_'.$params['order_by_id'] : '' }}" id="order_by_id" data-order="{{ $params['order_by_id'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">ID</th>
-                        <th>详情</th>
+                        <th width="400">详情</th>
                         <th width="80" class="sorting{{ !empty($params['order_by_type']) ? '_'.$params['order_by_type'] : '' }}" id="order_by_type" data-order="{{ $params['order_by_type'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">题型</th>
-                        <th width="80" class="sorting{{ !empty($params['order_by_create_user_name']) ? '_'.$params['order_by_create_user_name'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_create_user_name'] }}" onclick="orderPage(this,'{{ $questions->url
+                        <th class="sorting{{ !empty($params['order_by_create_user_name']) ? '_'.$params['order_by_create_user_name'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_create_user_name'] }}" onclick="orderPage(this,'{{ $questions->url
                         ($questions->currentPage()) }}')">创建人
                         </th>
-                        <th width="120" class="sorting{{ !empty($params['order_by_created_time']) ? '_'.$params['order_by_created_time'] : '' }}" id="order_by_created_time" data-order="{{ $params['order_by_created_time'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage())
+                        <th class="sorting{{ !empty($params['order_by_created_time']) ? '_'.$params['order_by_created_time'] : '' }}" id="order_by_created_time" data-order="{{ $params['order_by_created_time'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage())
                         }}')">创建时间
                         </th>
-                        <th width="80" class="sorting{{ !empty($params['order_by_update_user_name']) ? '_'.$params['order_by_update_user_name'] : '' }}" id="order_by_update_user_name" data-order="{{ $params['order_by_update_user_name'] }}" onclick="orderPage(this,'{{ $questions->url
+                        <th class="sorting{{ !empty($params['order_by_update_user_name']) ? '_'.$params['order_by_update_user_name'] : '' }}" id="order_by_update_user_name" data-order="{{ $params['order_by_update_user_name'] }}" onclick="orderPage(this,'{{ $questions->url
                         ($questions->currentPage()) }}')">修改人
                         </th>
-                        <th width="120" class="sorting{{ !empty($params['order_by_updated_time']) ? '_'.$params['order_by_updated_time'] : '' }}" id="order_by_updated_time" data-order="{{ $params['order_by_updated_time'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage())
+                        <th class="sorting{{ !empty($params['order_by_updated_time']) ? '_'.$params['order_by_updated_time'] : '' }}" id="order_by_updated_time" data-order="{{ $params['order_by_updated_time'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage())
                         }}')">修改时间
                         </th>
                         {{--                        <th width="75" class="sorting{{ !empty($params['order_by_id']) ? '_'.$params['order_by_id'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_id'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">浏览次数</th>--}}
@@ -69,8 +69,8 @@
                         <tr class="text-c">
                             <td><input type="checkbox" value="{{ $value['id'] }}" name="questionId"></td>
                             <td>{{ $value['id'] }}</td>
-                            <td class="text-l text-overflow">
-                                <u style="cursor:pointer" class="text-primary" onClick="article_edit('查看','article-zhang.html','10001')" title="查看">
+                            <td class="text-l text-overflow" style="width: 400px;display: block">
+                                <u style="cursor:pointer" class="text-primary text-overflow" style="width: 300px" onClick="showQuestion('查看','{{ url('admin/question/previewQuestion').'/'.$value['id'] }}')" title="查看">
                                     {{-- 使用 strip_tags 去除字符串中的HTML标识 --}}
                                     {{ strip_tags($value['description']) }}
                                 </u>
@@ -185,6 +185,10 @@
                 radioClass: 'iradio-blue',
                 increaseArea: '20%'
             });
+
+            @if(Session::has('code'))
+                $.Huimodalalert('{{ Session::get('message') }}',2000);
+            @endif
         });
 
         //选择试题类型事件
@@ -311,7 +315,16 @@
                     }
                 }
             });
-
+        }
+        
+        function showQuestion(title,url) {
+            var index = layer.open({
+                type: 2,
+                title: title,
+                content: url,
+                move : false,
+            });
+            layer.full(index);
         }
         {{--function searchCondition() {--}}
         {{--var params = {--}}

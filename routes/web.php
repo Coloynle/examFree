@@ -44,10 +44,11 @@ Route::group(['prefix' => 'admin'], function () {
  *  试题管理
  */
 Route::group(['prefix' => 'admin/question'], function () {
-    Route::get('addQuestion/{type}/{id?}', 'Admin\QuestionController@addQuestion');
-    Route::post('createQuestion/', 'Admin\QuestionController@createQuestion');
-    Route::get('manageQuestion/', 'Admin\QuestionController@manageQuestion');
-    Route::post('manageQuestion/', 'Admin\QuestionController@manageQuestion');
-    Route::get('changeQuestion/{id}', 'Admin\QuestionController@changeQuestion');
-    Route::post('deleteQuestion/{id?}', 'Admin\QuestionController@deleteQuestion');
+    Route::get('addQuestion/{type}/{id?}', 'Admin\QuestionController@addQuestion'); //添加试题
+    Route::post('createQuestion/', 'Admin\QuestionController@createQuestion');      //创建试题方法
+    Route::get('manageQuestion/', 'Admin\QuestionController@manageQuestion');       //管理试题初始
+    Route::post('manageQuestion/', 'Admin\QuestionController@manageQuestion');      //管理试题条件搜索
+    Route::get('changeQuestion/{id}', 'Admin\QuestionController@changeQuestion');   //修改试题
+    Route::post('deleteQuestion/{id?}', 'Admin\QuestionController@deleteQuestion'); //删除试题
+    Route::get('previewQuestion/{id?}', 'Admin\QuestionController@previewQuestion'); //预览试题
 });

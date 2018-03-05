@@ -129,6 +129,7 @@ class Question extends Model
 
     /**
      * 获取分页结果
+     *
      * @function pageResult
      * @param array $params
      * @return $this
@@ -138,7 +139,27 @@ class Question extends Model
         return self::searchByParams($params)->paginate(10)->appends($params);
     }
 
+    /**
+     * 通过检索条件删除试题
+     *
+     * @function searchDelete
+     * @param array $params
+     * @return bool|mixed|null
+     * @author CJ
+     */
     public function searchDelete($params = []){
         return self::searchByParams($params)->delete();
+    }
+
+    /**
+     * 获得试题信息
+     *
+     * @function getQuestion
+     * @param array $params
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @author CJ
+     */
+    public function getQuestion($params = []){
+        return self::searchByParams($params)->get()->toArray();
     }
 }

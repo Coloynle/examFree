@@ -55,8 +55,13 @@ class QuestionController extends Controller
      */
     public function createQuestion(Request $request)
     {
+        $parameter = $request->all();
         $parameters = $request->all();
-//        dd($parameters);
+        $parameters['description'] = strip_tags($parameters['description']);
+        $parameters['analysis'] = strip_tags($parameters['description']);
+        foreach ($parameters['option'] as $item =>$value){
+            $parameters['option'][$item] = strip_tags($parameters['option'][$item]);
+        }
 
         //验证规则
         $vaildatedData = [];
@@ -71,15 +76,15 @@ class QuestionController extends Controller
             'max' => ':attribute 长度不可大于10000',
         ];
 
-        $vaildatedData['description'] = "bail|required|max:10000";
-        $vaildatedData['analysis'] = "bail|required|max:10000";
+        $vaildatedData['description'] = "bail|required|max:30000";
+        $vaildatedData['analysis'] = "bail|required|max:30000";
 
 
         if ($parameters['questionType'] == 'SingleChoice') {           //单选题
             //验证规则数组
             foreach ($parameters['option'] as $item => $value) {
                 $key = 'option.' . $item;
-                $vaildatedData[$key] = "bail|required|max:10000";
+                $vaildatedData[$key] = "bail|required|max:30000";
                 $vaildateName[$key] = '选项' . $item . '描述';
 
             }
@@ -98,23 +103,26 @@ class QuestionController extends Controller
             //验证规则数组
             foreach ($parameters['option'] as $item => $value) {
                 $key = 'option.' . $item;
-                $vaildatedData[$key] = "bail|required|max:10000";
+                $vaildatedData[$key] = "bail|required|max:30000";
                 $vaildateName[$key] = '选项' . $item . '描述';
-                $vaildatedData['option_checkbox.'.$item] = "bail|required";
             }
+            $vaildatedData['option_checkbox'] = "bail|required";
             $vaildateName['option_checkbox'] = '试题选项';
+
+//            dd($vaildatedData,$vailErrorInfo,$vaildateName,$parameters);
+
 
             //验证表单
             $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
 
-            foreach ($parameters['option_checkbox'] as $item => $value) {
-                if (!isset($parameters['option'][$value])) {
-                    echo '正确答案不存在';
-                    return;
-                }
-            }
+//            foreach ($parameters['option_checkbox'] as $item => $value) {
+//                if (!isset($parameters['option'][$value])) {
+//                    echo '正确答案不存在';
+//                    return;
+//                }
+//            }
             $type = 'checkbox';
-            $parameters['option_checkbox'] = serialize($parameters['option_checkbox']);
+            $parameter['option_checkbox'] = serialize($parameters['option_checkbox']);
 
         } elseif ($parameters['questionType'] == 'TrueOrFalse') {         //判断题
             foreach ($parameters['option'] as $item => $value) {
@@ -144,12 +152,13 @@ class QuestionController extends Controller
             }
             $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
 
-            $parameters['option_short'] = 'ALL';
+            $parameter['option_short'] = 'ALL';
             $type = 'short';
         } else {                                                          //抛出异常
             return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with('error', '未知的试题类型');
         }
-        $this->saveQuestion($parameters, $type);
+
+        $this->saveQuestion($parameter, $type);
         return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with('success', '添加试题成功');
     }
 
@@ -165,18 +174,17 @@ class QuestionController extends Controller
 
         if (!empty($parameters['questionId'])) {
             $Question = Question::find($parameters['questionId']);
-            if(empty($Question)){
+            if (empty($Question)) {
                 $Question = new Question;
-            }else{
+            } else {
                 $Question->update_user_id = Auth::guard('admin')->user()->id;
             }
-        }else{
+        } else {
             $Question = new Question;
             $Question->create_user_id = Auth::guard('admin')->user()->id;
             $Question->type = $parameters['questionType'];
             $Question->update_user_id = 0;
         }
-
 
         //插入试题到数据库
         $Question->description = $parameters['description'];
@@ -193,25 +201,26 @@ class QuestionController extends Controller
      * @return array
      * @author CJ
      */
-    private function initParams(){
+    private function initParams()
+    {
         //初始化params
         return [
-            'id' =>Input::get('id',''),
-            'description' =>Input::get('description',''),
-            'type' =>Input::get('type',''),
-            'create_user_name' =>Input::get('create_user_name',''),
-            'update_user_name' =>Input::get('update_user_name',''),
-            'created_time_start' =>Input::get('created_time_start',''),
-            'created_time_end' =>Input::get('created_time_end',''),
-            'updated_time_start' =>Input::get('updated_time_start',''),
-            'updated_time_end' =>Input::get('updated_time_end',''),
-            'order_by_id' =>Input::get('order_by_id',''),
-            'order_by_description' =>Input::get('order_by_description',''),
-            'order_by_type' =>Input::get('order_by_type',''),
-            'order_by_create_user_name' =>Input::get('order_by_create_user_name',''),
-            'order_by_update_user_name' =>Input::get('order_by_update_user_name',''),
-            'order_by_created_time' =>Input::get('order_by_created_time',''),
-            'order_by_updated_time' =>Input::get('order_by_updated_time',''),
+            'id' => Input::get('id', ''),
+            'description' => Input::get('description', ''),
+            'type' => Input::get('type', ''),
+            'create_user_name' => Input::get('create_user_name', ''),
+            'update_user_name' => Input::get('update_user_name', ''),
+            'created_time_start' => Input::get('created_time_start', ''),
+            'created_time_end' => Input::get('created_time_end', ''),
+            'updated_time_start' => Input::get('updated_time_start', ''),
+            'updated_time_end' => Input::get('updated_time_end', ''),
+            'order_by_id' => Input::get('order_by_id', ''),
+            'order_by_description' => Input::get('order_by_description', ''),
+            'order_by_type' => Input::get('order_by_type', ''),
+            'order_by_create_user_name' => Input::get('order_by_create_user_name', ''),
+            'order_by_update_user_name' => Input::get('order_by_update_user_name', ''),
+            'order_by_created_time' => Input::get('order_by_created_time', ''),
+            'order_by_updated_time' => Input::get('order_by_updated_time', ''),
         ];
     }
 
@@ -223,11 +232,12 @@ class QuestionController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @author CJ
      */
-    public function manageQuestion(Request $request){
+    public function manageQuestion(Request $request)
+    {
         //关联查询admins表,获取name,并进行分页
         $questions = new Question;
         $questions = $questions->pageResult(self::initParams());
-        return view('admin/question/manageQuestion',[
+        return view('admin/question/manageQuestion', [
             'questions' => $questions,
             'params' => self::initParams()
         ]);
@@ -240,13 +250,14 @@ class QuestionController extends Controller
      * @return array
      * @author CJ
      */
-    public function deleteQuestion(){
+    public function deleteQuestion()
+    {
         //获取试题类型
-        $deleteType = Input::get('type','');
+        $deleteType = Input::get('type', '');
         //是否删除成功
         $TFSuccess = false;
-        if($deleteType == 0) {
-            $questionsId = Input::get('questionsId','');
+        if ($deleteType == 0) {
+            $questionsId = Input::get('questionsId', '');
             $questionsId = explode(',', $questionsId);
             $countQuestionsId = count($questionsId);
 
@@ -254,7 +265,7 @@ class QuestionController extends Controller
             $countDestroy = $questions::destroy($questionsId);
             //判断删除成功数量是否等于需要删除的数量
             $TFSuccess = $countDestroy == $countQuestionsId;
-        }else if($deleteType == 1){
+        } else if ($deleteType == 1) {
             $params = Input::get('params');
             $params = unserialize($params);
             $questions = new Question();
@@ -274,6 +285,53 @@ class QuestionController extends Controller
     }
 
     /**
+     * 恢复所有删除试题
+     *
+     * @function restoreQuestion
+     * @author CJ
+     */
+    public function restoreQuestion()
+    {
+        Question::withTrashed()->restore();
+        return;
+    }
+
+    /**
+     * 预览试题
+     *
+     * @function previewQuestion
+     * @param null $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @author CJ
+     */
+    public function previewQuestion($id = null)
+    {
+        $questions = new Question();
+        $questions = $questions->getQuestion([
+            'id' => $id
+        ]);
+        foreach ($questions as $key => $value) {
+            $questions[$key]['answer_info'] = unserialize($value['answer_info']);
+            ksort($questions[$key]['answer_info']);
+            if($questions[$key]['type'] == 'MultipleChoice'){
+                $questions[$key]['answer'] = unserialize($value['answer']);
+                ksort($questions[$key]['answer']);
+            }
+        }
+//        dd($questions);
+
+        if(empty($questions)){
+            return redirect('/admin/question/manageQuestion/')->with([
+                'code' => '-2',
+                'message' => '试题不存在'
+            ]);
+        }
+        return view('admin/question/previewQuestion', [
+            'question' => $questions,
+        ]);
+    }
+
+    /**
      * 修改试题
      * @function changeQuestion
      * @return \Illuminate\Http\RedirectResponse
@@ -282,7 +340,7 @@ class QuestionController extends Controller
     public function changeQuestion()
     {
         $admin = new Admin();
-        $admin = $admin->select('id')->where('name','=','Coloynle')->first();
+        $admin = $admin->select('id')->where('name', '=', 'Coloynle')->first();
         dd($admin->id);
         exit;
         $_old_input = [
@@ -298,14 +356,5 @@ class QuestionController extends Controller
         return redirect('/admin/question/addQuestion/SingleChoice/1')->with('_old_input', $_old_input);
     }
 
-    /**
-     * 恢复所有删除试题
-     *
-     * @function restoreQuestion
-     * @author CJ
-     */
-    public function restoreQuestion(){
-        Question::withTrashed()->restore();
-        return;
-    }
+
 }
