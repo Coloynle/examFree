@@ -5,13 +5,13 @@
     <script type="text/javascript" charset="utf-8" src="{{ asset('h-ui/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js') }}"></script>
     <script>
 
-        @if(Session::has('success'))
+        @if(Session::has('message'))
         $(function () {
-            $.Huimodalalert('{{ Session::get('success') }}', 2000);
-        });
-        @elseif(Session::has('error'))
-        $(function () {
-            $.Huimodalalert('{{ Session::get('error') }}', 2000);
+            $.Huimodalalert('{{ Session::get('message') }}', 2000);
+            @if(Session::get('code') == 2)
+            var index = parent.layer.getFrameIndex(window.name);
+            setTimeout(function(){parent.layer.close(index)}, 2000);
+            @endif
         });
         @endif
 

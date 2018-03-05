@@ -29,4 +29,9 @@ return [
         'ShortAnswer' => '简答题',
     ],
 
+    'question_status' => [
+        '0' => '已发布',
+        '1' => '未发布',
+    ]
+
 ];

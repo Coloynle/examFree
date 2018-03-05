@@ -40,7 +40,7 @@ class QuestionController extends Controller
     public function addQuestion($type, $id = false)
     {
         $context = [
-            'status' => ['type' => $type, 'id' => $id]      //类型 和 试题ID
+            'status' => ['type' => $type, 'id' => $id, 'breadcrumbTop' => $id]      //类型 和 试题ID
         ];
         return view('admin/question/addQuestion', ['context' => $context]);
     }
@@ -155,18 +155,40 @@ class QuestionController extends Controller
             $parameter['option_short'] = 'ALL';
             $type = 'short';
         } else {                                                          //抛出异常
-            return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with('error', '未知的试题类型');
+            return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with([
+                'code' => '0',
+                'message' => '未知的试题类型'
+            ]);
         }
-
-        $this->saveQuestion($parameter, $type);
-        return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with('success', '添加试题成功');
+        $save = $this->saveQuestion($parameter, $type);
+        if($save){
+            if(empty($parameters['questionId'])){
+                $message = [
+                    'code' => '1',
+                    'message' => '添加试题成功'
+                ];
+            }else{
+                $message = [
+                    'code' => '2',
+                    'message' => '修改试题成功'
+                ];
+            }
+            return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with($message);
+        }else{
+            return redirect('/admin/question/addQuestion/' . $parameters['questionType'])->with([
+                'code' => '0',
+                'message' => '试题保存失败'
+            ]);
+        }
     }
 
     /**
      * 保存试题到数据库 (或更新)
+     *
      * @function saveQuestion
      * @param $parameters
      * @param $type
+     * @return bool
      * @author CJ
      */
     public function saveQuestion($parameters, $type)
@@ -179,6 +201,7 @@ class QuestionController extends Controller
             } else {
                 $Question->update_user_id = Auth::guard('admin')->user()->id;
             }
+
         } else {
             $Question = new Question;
             $Question->create_user_id = Auth::guard('admin')->user()->id;
@@ -191,7 +214,7 @@ class QuestionController extends Controller
         $Question->analysis = $parameters['analysis'];
         $Question->answer = $parameters['option_' . $type];
         $Question->answer_info = serialize($parameters['option']);
-        $Question->save();
+        return $Question->save();
     }
 
     /**
@@ -239,7 +262,8 @@ class QuestionController extends Controller
         $questions = $questions->pageResult(self::initParams());
         return view('admin/question/manageQuestion', [
             'questions' => $questions,
-            'params' => self::initParams()
+            'params' => self::initParams(),
+            'context' => ['status' => ['breadcrumbTop' => false]]
         ]);
     }
 
@@ -296,6 +320,38 @@ class QuestionController extends Controller
         return;
     }
 
+    public function statusQuestion(){
+        //获取试题类型
+        $Type = Input::get('type', '');
+        $status = Input::get('status', '');
+        $statusWord = $status == 0 ? '上架' : '下架';
+        //是否上下架成功
+        $TFSuccess = false;
+        if ($Type == 0) {
+            $questionsId = Input::get('questionsId', '');
+            $questionsId = explode(',', $questionsId);
+
+            $questions = new Question();
+            $TFSuccess = $questions->updateStatusQuestionForId($questionsId,$status);
+        } else if ($Type == 1) {
+            $params = Input::get('params');
+            $params = unserialize($params);
+            $questions = new Question();
+            $TFSuccess = $questions->updateStatusQuestionForParams($params,$status);
+        }
+        if ($TFSuccess) {
+            return [
+                'code' => 0,
+                'message' => $statusWord.'成功',
+            ];
+        } else {
+            return [
+                'code' => -1,
+                'message' => $statusWord.'失败',
+            ];
+        }
+    }
+
     /**
      * 预览试题
      *
@@ -310,6 +366,7 @@ class QuestionController extends Controller
         $questions = $questions->getQuestion([
             'id' => $id
         ]);
+        //将试题选项排序
         foreach ($questions as $key => $value) {
             $questions[$key]['answer_info'] = unserialize($value['answer_info']);
             ksort($questions[$key]['answer_info']);
@@ -318,8 +375,8 @@ class QuestionController extends Controller
                 ksort($questions[$key]['answer']);
             }
         }
-//        dd($questions);
 
+        //如果没有找到返回试题不存在
         if(empty($questions)){
             return redirect('/admin/question/manageQuestion/')->with([
                 'code' => '-2',
@@ -337,23 +394,19 @@ class QuestionController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @author CJ
      */
-    public function changeQuestion()
+    public function changeQuestion($id = null)
     {
-        $admin = new Admin();
-        $admin = $admin->select('id')->where('name', '=', 'Coloynle')->first();
-        dd($admin->id);
-        exit;
-        $_old_input = [
-            'description' => 'asd',
-//            'analysis' => 'asd',
-            'option' => [
-                'A' => '1',
-                'B' => '2',
-                'C' => '3',
-//                'D' => '4',
-            ],
-        ];
-        return redirect('/admin/question/addQuestion/SingleChoice/1')->with('_old_input', $_old_input);
+        $question = new Question();
+        $question = $question->getQuestion([
+            'id' => $id
+        ]);
+        $_old_input = $question[0];
+        $_old_input['option'] = unserialize($_old_input['answer_info']);
+        if($_old_input['type'] == 'MultipleChoice')
+            $_old_input['option_checkbox'] = unserialize($_old_input['answer']);
+        elseif ($_old_input['type'] == 'SingleChoice' || $_old_input['type'] == 'TrueOrFalse')
+            $_old_input['option_radio'] = $_old_input['answer'];
+        return redirect('/admin/question/addQuestion/'.$_old_input["type"].'/'.$id)->with('_old_input', $_old_input);
     }
 
 

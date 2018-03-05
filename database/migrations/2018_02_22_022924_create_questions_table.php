@@ -22,6 +22,7 @@ class CreateQuestionsTable extends Migration
             $table->longText('analysis')->comment('试题详解');
             $table->integer('create_user_id')->comment('创建者的ID');
             $table->integer('update_user_id')->default(null)->comment('修改者的ID');
+            $table->integer('status')->default(0)->comment('试题状态');
             $table->rememberToken();
             $table->timestamps();
         });

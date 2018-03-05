@@ -35,6 +35,7 @@
 </head>
 <body>
 
+@if(isset($context['status']['breadcrumbTop']) && !$context['status']['breadcrumbTop'])
 {{-- 刷新栏 --}}
 <nav class="breadcrumb">
     <i class="Hui-iconfont">&#xe67f;</i>
@@ -56,7 +57,7 @@
     </a>
 </nav>
 {{-- 刷新栏END --}}
-
+@endif
 @yield('content')
 {{--<script type="text/javascript" src="{{ asset('js/app.js') }}"></script>--}}
 <script type="text/javascript" src="{{ asset('h-ui/lib/layer/2.4/layer.js') }}"></script>

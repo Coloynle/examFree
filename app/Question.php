@@ -162,4 +162,30 @@ class Question extends Model
     public function getQuestion($params = []){
         return self::searchByParams($params)->get()->toArray();
     }
+
+    /**
+     * 通过试题ID更新试题状态
+     *
+     * @function updateStatusQuestionForId
+     * @param $questionsId
+     * @param $status
+     * @return mixed
+     * @author CJ
+     */
+    public function updateStatusQuestionForId($questionsId,$status){
+        return self::whereIn('id',$questionsId)->update(['status' => $status]);
+    }
+
+    /**
+     * 通过试题检索条件更新试题状态
+     *
+     * @function updateStatusQuestionForParams
+     * @param array $params
+     * @param $status
+     * @return bool|int
+     * @author CJ
+     */
+    public function updateStatusQuestionForParams($params = [],$status){
+        return self::searchByParams($params)->update(['status' => $status]);
+    }
 }

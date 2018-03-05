@@ -45,11 +45,13 @@
         @elseif($item == 'answer_info')
             @foreach($value as $ite => $val)
                 @if(($question[0]['type'] == 'MultipleChoice' && in_array($ite,$question[0]['answer'])) || (($question[0]['type'] == 'SingleChoice' || $question[0]['type'] == 'TrueOrFalse') && $ite == $question[0]['answer']))
+                    {{-- 如果选项是正确答案 --}}
                     <div class="panel panel-success radius">
                         <div class="panel-header">{{ $ite }}</div>
                         <div class="panel-body">{!! $val !!}</div>
                     </div>
                 @else
+                    {{-- 如果不是正确答案（简答题不给颜色） --}}
                     <div class="panel panel-secondary-change radius">
                         <div class="panel-header">{{ $ite }}</div>
                         <div class="panel-body">{!! $val !!}</div>

@@ -2,12 +2,16 @@
 @section('content')
     {{-- 日期插件 --}}
     <script type="text/javascript" src="{{ asset('h-ui/lib/My97DatePicker/4.8/WdatePicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/admin/question/manageQuestion.js') }}"></script>
     {{-- 表格插件 --}}
     {{--<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>--}}
     {{-- laypage插件 --}}
     {{--<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>--}}
     <link href="{{ asset('css/addClass.css') }}" rel="stylesheet" type="text/css"/>
-
+    <input type="hidden" id="deleteQuestion" value="{{ url('admin/question/deleteQuestion/') }}">
+    <input type="hidden" id="currentPage" value="{{ $questions->url($questions->currentPage()) }}">
+    <input type="hidden" id="statusQuestion" value="{{ url('admin/question/statusQuestion/') }}">
+    <input type="hidden" id="params" value='{!! serialize($params) !!}'>
     <div class="page-container">
         <div class="mt-10">
             <form method="POST" action="{{ url('admin/question/manageQuestion/') }}" id="searchFrom">
@@ -81,16 +85,22 @@
                             <td title="{{ $value['getUpdateUserName']['name'] or '无'}}">{{ $value['getUpdateUserName']['name'] or '无'}}</td>
                             <td title="{{ $value['updated_at'] }}">{{ $value['updated_at'] }}</td>
                             {{--<td>21212</td>--}}
-                            <td class="td-status"><span class="label label-success radius">已发布</span></td>
+                            <td class="td-status"><span class="label label-success radius">{{ config('exam.question_status.'.$value['status'],'未知') }}</span></td>
                             <td class="f-14 td-manage">
-                                <a style="text-decoration:none" onClick="article_stop(this,'10001')" href="javascript:;" title="下架">
-                                    <i class="Hui-iconfont">&#xe6de;</i>
+                                @if(!$value['status'])
+                                <a style="text-decoration:none" onClick="statusChangeOne({{ $value['id'] }},1)" href="javascript:;" title="下架">
+                                    <i class="Hui-iconfont Hui-iconfont-xiajia"></i>
                                 </a>
-                                <a style="text-decoration:none" class="ml-5" onClick="article_edit('资讯编辑','article-add.html','10001')" href="javascript:;" title="编辑">
+                                @else
+                                    <a style="text-decoration:none" onClick="statusChangeOne({{ $value['id'] }},0)" href="javascript:;" title="发布">
+                                        <i class="Hui-iconfont Hui-iconfont-fabu"></i>
+                                    </a>
+                                @endif
+                                <a style="text-decoration:none" class="ml-5" onclick="showQuestion('编辑','{{ url('admin/question/changeQuestion').'/'.$value['id'] }}')" title="编辑" href="javascript:;">
                                     <i class="Hui-iconfont">&#xe6df;</i>
                                 </a>
                                 <a style="text-decoration:none" class="ml-5" onClick="deleteOne('{{ $value['id'] }}')" href="javascript:;" title="删除">
-                                    <i class="Hui-iconfont">&#xe6e2;</i>
+                                    <i class="Hui-iconfont Hui-iconfont-del2"></i>
                                 </a>
                             </td>
                         </tr>
@@ -101,17 +111,17 @@
             <div class="f-l">
                 <ul class="pagination">
                     <li>
-                        <a style="text-decoration:none" onClick="batchDeletion()" href="javascript:;" title="批量删除">
+                        <a style="text-decoration:none" onClick="batchDeletion('del')" href="javascript:;" title="批量删除">
                             <i class="Hui-iconfont Hui-iconfont-del2"> </i>
                         </a>
                     </li>
                     <li>
-                        <a style="text-decoration:none" onClick="article_del(this,'10001')" href="javascript:;" title="批量发布">
+                        <a style="text-decoration:none" onClick="batchDeletion('release')" href="javascript:;" title="批量发布">
                             <i class="Hui-iconfont Hui-iconfont-fabu"></i>
                         </a>
                     </li>
                     <li>
-                        <a style="text-decoration:none" onClick="article_del(this,'10001')" href="javascript:;" title="批量下架">
+                        <a style="text-decoration:none" onClick="batchDeletion('underTheShelf')" href="javascript:;" title="批量下架">
                             <i class="Hui-iconfont Hui-iconfont-xiajia"></i>
                         </a>
                     </li>
@@ -162,192 +172,72 @@
             </div>
         </div>
     </div>
+    <div id="modal-release" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <h3 class="modal-title">批量发布</h3>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:;">×</a>
+                </div>
+                <div class="modal-body">
+                    <div class="skin-minimal text-c">
+                        <div class="radio-box mr-50">
+                            <label class="f-l">
+                                <input type="radio" name="releaseType" value="0" id="choose">
+                                <span>发布选中试题</span>
+                            </label>
+                        </div>
+                        <div class="radio-box">
+                            <label class="f-l">
+                                <input type="radio" name="releaseType" value="1">
+                                <span>发布检索试题</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="statusChangeQuestion('release','releaseType',0)">确定</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-underTheShelf" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <h3 class="modal-title">批量下架</h3>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:;">×</a>
+                </div>
+                <div class="modal-body">
+                    <div class="skin-minimal text-c">
+                        <div class="radio-box mr-50">
+                            <label class="f-l">
+                                <input type="radio" name="underTheShelfType" value="0" id="choose">
+                                <span>下架选中试题</span>
+                            </label>
+                        </div>
+                        <div class="radio-box">
+                            <label class="f-l">
+                                <input type="radio" name="underTheShelfType" value="1">
+                                <span>下架检索试题</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="statusChangeQuestion('underTheShelf','underTheShelfType',1)">确定</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        //页面加载完毕后运行,保证试题类型选择样式正确
+        //页面加载完毕后运行,显示获得的消息
         $(function () {
-            //试题类型搜索条件
-            var type = $('input[name=type]').val() || '';
-            $('#questionType a').each(function () {
-                if ($(this).data('value') == type) {
-                    $(this).removeClass('btn-default');
-                    $(this).removeClass('btn-primary');
-                    $(this).addClass('btn-primary');
-                } else {
-                    $(this).removeClass('btn-default');
-                    $(this).removeClass('btn-primary');
-                    $(this).addClass('btn-default');
-                }
-            });
-
-            //初始化单选按钮
-            $('.skin-minimal input').iCheck({
-                checkboxClass: 'icheckbox-blue',
-                radioClass: 'iradio-blue',
-                increaseArea: '20%'
-            });
-
             @if(Session::has('code'))
-                $.Huimodalalert('{{ Session::get('message') }}',2000);
+            $.Huimodalalert('{{ Session::get('message') }}',2000);
             @endif
-        });
-
-        //选择试题类型事件
-        function chooseType(that) {
-            $(that).siblings('a').removeClass('btn-primary');
-            $(that).siblings('a').removeClass('btn-default');
-            $(that).siblings('a').addClass('btn-default');
-            $(that).removeClass('btn-default');
-            $(that).removeClass('btn-primary');
-            $(that).addClass('btn-primary');
-            $('input[name=type]').val($(that).data('value'));
-        }
-
-        //重置搜索表单,并且提交表单
-        function resetFrom() {
-            $('#searchFrom input[type=text]').each(function () {
-                $(this).val('');
-            });
-            $('input[name=type]').val('');
-            $('#searchFrom').submit();
-        }
-
-        //排序分页方法 刷新页面
-        function orderPage(that, href) {
-            var order = $(that).data('order');
-            var key = $(that).attr('id');
-            if (order == '') {
-                $(that).data('order', 'desc');
-                $(that).attr('class', 'sorting_desc');
-                window.location.href = href + '&' + key + '=desc';
-            } else if (order == 'desc') {
-                $(that).data('order', 'asc');
-                $(that).attr('class', 'sorting_asc');
-                window.location.href = href + '&' + key + '=asc';
-            } else if (order == 'asc') {
-                $(that).data('order', '');
-                $(that).attr('class', 'sorting');
-                window.location.href = href + '&' + key + '=';
-            }
-        }
-
-        //展示批量删除弹出层
-        function batchDeletion() {
-            if($('#total').data('total') == 0){
-                $.Huimodalalert('没有可以删除的数据',2000);
-            }else{
-                if($('input[name=questionId]:checked').length == 0){
-                    $('#choose').attr('disabled','true');
-                    $('#modal-del').find('.radio-box').eq(0).iCheck('uncheck');
-                }else {
-                    $('#choose').removeAttr('disabled');
-                }
-                $('#modal-del').modal("show");
-            }
-        }
-
-        //批量删除弹出层确定按钮事件 （发送AJAX请求软删除试题）
-        function deleteAnyQuestion() {
-            var deleteType = $('input[name=deleteType]:checked').val();
-            //选中项删除(0)
-            if(deleteType == 0){
-                var questionsId = $('input[name=questionId]:checked').map(function (index,elem) {
-                    return $(elem).val();
-                }).get().join(',');
-
-                var data = {
-                    '_token' : '{{ csrf_token() }}',
-                    'type' : deleteType,
-                    'questionsId' : questionsId
-                };
-            }
-            //检索条件删除
-            else if(deleteType == 1){
-                var data = {
-                    '_token' : '{{ csrf_token() }}',
-                    'params' : '{!! serialize($params) !!}',
-                    'type' : deleteType
-                };
-            }
-            //如果没有选择
-            else{
-                $.Huimodalalert('请选择一种方式删除',2000);
-                return false;
-            }
-
-            $.ajax({
-                'url' : '{{ url('admin/question/deleteQuestion/') }}',
-                'data' : data,
-                'type' : 'POST',
-                'success' : function (data) {
-                    $('#modal-del').modal("hide");
-                    if(data.code == 0){
-                        $.Huimodalalert(data.message,2000);
-                        setTimeout(function () {
-                            location.replace('{{ $questions->url($questions->currentPage()) }}');
-                        },2000);
-                    }else{
-                        $.Huimodalalert(data.message,2000);
-                    }
-                }
-            });
-        }
-
-        //删除单一试题
-        function deleteOne(questionId) {
-            questionId = questionId || '';
-            $.ajax({
-                'url' : '{{ url('admin/question/deleteQuestion/') }}',
-                'data' : {
-                    '_token' : '{{ csrf_token() }}',
-                    'type' : 0,
-                    'questionsId' : questionId
-                },
-                'type' : 'POST',
-                'success' : function (data) {
-                    $('#modal-del').modal("hide");
-                    if(data.code == 0){
-                        $.Huimodalalert(data.message,2000);
-                        setTimeout(function () {
-                            location.replace('{{ $questions->url($questions->currentPage()) }}');
-                        },2000);
-                    }else{
-                        $.Huimodalalert(data.message,2000);
-                    }
-                }
-            });
-        }
-        
-        function showQuestion(title,url) {
-            var index = layer.open({
-                type: 2,
-                title: title,
-                content: url,
-                move : false,
-            });
-            layer.full(index);
-        }
-        {{--function searchCondition() {--}}
-        {{--var params = {--}}
-        {{--'_token': '{{ csrf_token() }}',--}}
-        {{--'id': $('input[name=id]').val(),--}}
-        {{--'description': $('input[name=description]').val(),--}}
-        {{--'type': $('input[name=type]').val(),--}}
-        {{--'create_user_name': $('input[name=create_user_name]').val(),--}}
-        {{--'update_user_name': $('input[name=update_user_name]').val(),--}}
-        {{--'created_time_start': $('input[name=created_time_start]').val(),--}}
-        {{--'created_time_end': $('input[name=created_time_end]').val(),--}}
-        {{--'updated_time_start': $('input[name=updated_time_start]').val(),--}}
-        {{--'updated_time_end': $('input[name=updated_time_end]').val()--}}
-        {{--};--}}
-        {{--$.ajax({--}}
-        {{--'url': '{{ url('admin/question/manageQuestion/') }}',--}}
-        {{--'data': params,--}}
-        {{--'type': 'POST',--}}
-        {{--'dataType': 'json',--}}
-        {{--'success': function (data) {--}}
-        {{--console.log(data);--}}
-        {{--}--}}
-        {{--})--}}
-        {{--}--}}
+        });0
     </script>
 @endsection
