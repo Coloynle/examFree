@@ -14,6 +14,20 @@ $(function () {
         }
     });
 
+    //试题类型搜索条件
+    var status = $('input[name=status]').val() || '';
+    $('#questionStatus a').each(function () {
+        if ($(this).data('value').toString() === status) {
+            $(this).removeClass('btn-default');
+            $(this).removeClass('btn-primary');
+            $(this).addClass('btn-primary');
+        } else {
+            $(this).removeClass('btn-default');
+            $(this).removeClass('btn-primary');
+            $(this).addClass('btn-default');
+        }
+    });
+
     //初始化单选按钮
     $('.skin-minimal input').iCheck({
         checkboxClass: 'icheckbox-blue',
@@ -40,12 +54,24 @@ function chooseType(that) {
     $('input[name=type]').val($(that).data('value'));
 }
 
+//选择试题类型事件
+function chooseStatus(that) {
+    $(that).siblings('a').removeClass('btn-primary');
+    $(that).siblings('a').removeClass('btn-default');
+    $(that).siblings('a').addClass('btn-default');
+    $(that).removeClass('btn-default');
+    $(that).removeClass('btn-primary');
+    $(that).addClass('btn-primary');
+    $('input[name=status]').val($(that).data('value'));
+}
+
 //重置搜索表单,并且提交表单
 function resetFrom() {
     $('#searchFrom input[type=text]').each(function () {
         $(this).val('');
     });
     $('input[name=type]').val('');
+    $('input[name=status]').val('');
     $('#searchFrom').submit();
 }
 

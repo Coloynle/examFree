@@ -20,6 +20,7 @@
                     <input type="text" name="id" value="{{ $params['id'] }}" class="input-text radius f-l mr-10 mt-10" style="width: 100px" placeholder="试题ID">
                     <input type="text" name="description" value="{{ $params['description'] }}" class="input-text radius f-l mr-10 mt-10" style="width: 200px" placeholder="试题详情">
                     <input type="hidden" name="type" value="{{ $params['type'] }}">
+                    <input type="hidden" name="status" value="{{ $params['status'] }}">
                     <div class="btn-group f-l mr-10 mt-10" id="questionType">
                         <a class="btn btn-primary radius" href="javascript:;" data-value="" onclick="chooseType(this)">全部</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="SingleChoice" onclick="chooseType(this)">单选题</a>
@@ -27,6 +28,11 @@
                         <a class="btn btn-default radius" href="javascript:;" data-value="TrueOrFalse" onclick="chooseType(this)">判断题</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="FillInTheBlank" onclick="chooseType(this)">填空题</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="ShortAnswer" onclick="chooseType(this)">简答题</a>
+                    </div>
+                    <div class="btn-group f-l mr-10 mt-10" id="questionStatus">
+                        <a class="btn btn-primary radius" href="javascript:;" data-value="" onclick="chooseStatus(this)">全部</a>
+                        <a class="btn btn-default radius" href="javascript:;" data-value="0" onclick="chooseStatus(this)">已发布</a>
+                        <a class="btn btn-default radius" href="javascript:;" data-value="1" onclick="chooseStatus(this)">未发布</a>
                     </div>
                 </div>
                 <div class="cl">
@@ -62,14 +68,12 @@
                         <th class="sorting{{ !empty($params['order_by_updated_time']) ? '_'.$params['order_by_updated_time'] : '' }}" id="order_by_updated_time" data-order="{{ $params['order_by_updated_time'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage())
                         }}')">修改时间
                         </th>
-                        {{--                        <th width="75" class="sorting{{ !empty($params['order_by_id']) ? '_'.$params['order_by_id'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_id'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">浏览次数</th>--}}
-                        <th width="60" class="sorting{{ !empty($params['order_by_id']) ? '_'.$params['order_by_id'] : '' }}" id="order_by_create_user_name" data-order="{{ $params['order_by_id'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">发布状态</th>
+                        <th width="60" class="sorting{{ !empty($params['order_by_status']) ? '_'.$params['order_by_status'] : '' }}" id="order_by_status" data-order="{{ $params['order_by_status'] }}" onclick="orderPage(this,'{{ $questions->url($questions->currentPage()) }}')">发布状态</th>
                         <th width="120">操作</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach( $questions as $item => $value )
-                        {{--{{ dd($value) }}--}}
                         <tr class="text-c">
                             <td><input type="checkbox" value="{{ $value['id'] }}" name="questionId"></td>
                             <td>{{ $value['id'] }}</td>
@@ -105,6 +109,12 @@
                             </td>
                         </tr>
                     @endforeach
+{{--                    {{ dd($questions) }}--}}
+                    @if(empty($questions->total()))
+                        <tr class="text-c">
+                            <td colspan="10">没有数据</td>
+                        </tr>
+                    @endif
                     </tbody>
                 </table>
             </div>

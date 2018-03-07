@@ -71,6 +71,10 @@ class Question extends Model
         if(!empty($params['type'])){
             $select = $select->where('type','=',$params['type']);
         }
+        //试题状态条件
+        if(isset($params['status']) && $params['status'] != ''){
+            $select = $select->where('status','=',(int)$params['status']);
+        }
         //创建人条件
         if(!empty($params['create_user_name'])){
             $admin = new Admin();
@@ -107,6 +111,10 @@ class Question extends Model
         if(!empty($params['order_by_type'])){
             $select = $select->orderBy('type',$params['order_by_type']);
         }
+        //试题状态排序
+        if(!empty($params['order_by_status'])){
+            $select = $select->orderBy('status',$params['order_by_status']);
+        }
         //试题创建者排序
         if(!empty($params['order_by_create_user_name'])){
             $select = $select->orderBy('create_user_id',$params['order_by_create_user_name']);
@@ -136,6 +144,7 @@ class Question extends Model
      * @author CJ
      */
     public function pageResult($params = []){
+//        dd(self::searchByParams($params));
         return self::searchByParams($params)->paginate(10)->appends($params);
     }
 
