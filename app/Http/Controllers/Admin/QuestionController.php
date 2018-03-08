@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Admin;
+use Validator;
 use Illuminate\Contracts\Pagination\Paginator;
 use App\Question;
 use Illuminate\Http\Request;
@@ -58,9 +59,11 @@ class QuestionController extends Controller
         $parameter = $request->all();
         $parameters = $request->all();
         $parameters['description'] = strip_tags($parameters['description']);
-        $parameters['analysis'] = strip_tags($parameters['description']);
-        foreach ($parameters['option'] as $item =>$value){
-            $parameters['option'][$item] = strip_tags($parameters['option'][$item]);
+        $parameters['analysis'] = strip_tags($parameters['analysis']);
+        if(isset($parameters['option'])) {
+            foreach ($parameters['option'] as $item => $value) {
+                $parameters['option'][$item] = strip_tags($parameters['option'][$item]);
+            }
         }
 
         //验证规则
@@ -76,7 +79,7 @@ class QuestionController extends Controller
             'max' => ':attribute 长度不可大于10000',
         ];
 
-        $vaildatedData['description'] = "bail|required|max:30000";
+        $vaildatedData['description'] = "bail|required|max:10000";
         $vaildatedData['analysis'] = "bail|required|max:30000";
 
 
@@ -142,12 +145,32 @@ class QuestionController extends Controller
             }
             $type = 'radio';
         } elseif ($parameters['questionType'] == 'FillInTheBlank') {      //填空题
+            $parameters['countBlank'] = (int)$parameters['countBlank'];
+//            dd($parameters);
+            if(isset($parameters['option'])) {
+                foreach ($parameters['option'] as $item => $value) {
+                    $key = 'option.' . $item;
+                    $vaildatedData[$key] = "bail|required|max:10000";
+                    $vaildateName[$key] = '答案' . $item . '描述';
 
+                }
+            }
+            $vaildatedData['countBlank'] = "bail|integer|min:1";
+            $vaildateName['countBlank'] = "填空个数";
+            $vaildatedData['option'] = "bail|required|min:1";
+            $vaildateName['option'] = "填空个数";
+            $vailErrorInfo['min'] = ' :attribute 必须大于一个';
+            $validator = \Validator::make($parameters,$vaildatedData,$vailErrorInfo,$vaildateName)->validate();
+
+
+//            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
+            $parameter['option_blank'] = 'ALL';
+            $type = 'blank';
         } elseif ($parameters['questionType'] == 'ShortAnswer') {         //简答题
             foreach ($parameters['option'] as $item => $value) {
                 $key = 'option.' . $item;
                 $vaildatedData[$key] = "bail|required|max:10000";
-                $vaildateName[$key] = '答案' . $item . '描述';
+                $vaildateName[$key] = '填空' . $item . '答案';
 
             }
             $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);

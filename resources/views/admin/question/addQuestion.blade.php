@@ -73,6 +73,7 @@
 
         /* 添加一个选项 */
         function addOptions(divObj) {
+            //填空题和别的试题不同code
             @if($context['status']['type'] == 'FillInTheBlank')
             var code = $(divObj).find('.btn-group').last().data('content') || '@';
             @else
@@ -88,7 +89,7 @@
             var divHtml = "<div id=\"option_content_"+ word +"\" class=\"btn-group cl mb-10 f-l mr-20\" data-content='"+ word +"'>" +
                             "<a class=\"btn btn-secondary radius f-l\" style=\"width: 36px\">"+ word +"</a>" +
                             "<input type=\"text\" name=\"option["+ word +"]\" class=\"input-text f-l\" style=\"width: 300px;\">" +
-                            "<a style=\"text-decoration:none\" class=\"btn btn-danger radius f-l\" onClick=\"batchDeletion('del')\" href=\"javascript:;\" title=\"删除\">" +
+                            "<a style=\"text-decoration:none\" class=\"btn btn-danger radius f-l\" onClick=\"deleteFillInTheBlank(this)\" href=\"javascript:;\" title=\"删除\">" +
                               "<i class=\"Hui-iconfont Hui-iconfont-del2\"> </i>" +
                             "</a>" +
                           "</div>";
@@ -98,7 +99,7 @@
             ue.focus();
             ue.execCommand('inserthtml',option);
 
-            //遍历编辑器内按钮 判断是否是在中间插入的填空
+            //遍历编辑器内按钮 判断是否是在中间插入的填空 ( 保证填空题是序号是按顺序排列，确保删除不出现问题 )
             var ueObj = $(ue.getContent());
             var tempCode = 65;
             var changeCode = false;
@@ -116,13 +117,14 @@
                 }
                 tempCode++;
             });
-            ue.setContent('');
-            var temp = '';
-            ueObj.each(function () {
-                temp += this.outerHTML;
-            });
-            ue.setContent(temp);
-
+            if(changeCode) {
+                ue.setContent('');
+                var temp = '';
+                ueObj.each(function () {
+                    temp += this.outerHTML;
+                });
+                ue.setContent(temp);
+            }
             //遍历下方填空处顺序
             if(changeCode){
                 for($i=word.charCodeAt(0);$i>=changeCode;$i--){
@@ -133,6 +135,8 @@
                     }
                 }
             }
+            countFillInTheBlank();
+            $('#option_error').html('');
             @else
             var divHtml = "<div class=\"panel panel-secondary-change\" data-content=\"" + word + "\" id=\"option_" + word + "\">" +
                 "" + delButton + "" +
@@ -166,7 +170,7 @@
 
         /* 删除一个选项 */
         function deleteOption(that) {
-            if (!singleChoiceCount()) {
+            if (!choiceCount()) {
                 return false;
             }
             var option = $(that).parent().attr('id');
@@ -203,8 +207,8 @@
             $('#modal').modal('hide');
         }
 
-        /* 判断单选数量保证至少有三个选项 */
-        function singleChoiceCount() {
+        /* 判断选项数量保证至少存在个数 */
+        function choiceCount() {
             var count = $('#option').find('.panel-secondary-change').length;
             @if(  $context['status']['type'] == 'ShortAnswer' )
             var minCount = 1;
@@ -217,6 +221,49 @@
             } else {
                 return true;
             }
+        }
+
+        /* 删除一个填空 */
+        function deleteFillInTheBlank(that){
+            var startCode = $(that).parent().data('content');
+            var endCode = $('#option').find('.btn-group').last().data('content');
+            for(var i = startCode.charCodeAt(0);i<endCode.charCodeAt(0);i++){
+                $('#option_content_'+String.fromCharCode(i)).find('input').val($('#option_content_'+String.fromCharCode(i+1)).find('input').val());
+            }
+            $('#option_content_'+endCode).remove();
+            var ue = UE.getEditor('description');
+            var ueObj = $(ue.getContent());
+            ueObj.find('#option_'+startCode).remove();
+            var tempCode = 65;
+            var changeCode = false;
+            ueObj.find('input[type=button]').each(function () {
+                if(changeCode){
+                    $(this).attr('id','option_'+String.fromCharCode(tempCode));
+                    $(this).val('填空'+String.fromCharCode(tempCode));
+                    $(this).data('content',String.fromCharCode(tempCode));
+                }
+                else if($(this).data('content') != String.fromCharCode(tempCode)){
+                    changeCode = tempCode;
+                    $(this).attr('id','option_'+String.fromCharCode(tempCode));
+                    $(this).val('填空'+String.fromCharCode(tempCode));
+                    $(this).data('content',String.fromCharCode(tempCode));
+                }
+                tempCode++;
+            });
+            if(changeCode) {
+                ue.setContent('');
+                var temp = '';
+                ueObj.each(function () {
+                    temp += this.outerHTML;
+                });
+                ue.setContent(temp);
+            }
+            countFillInTheBlank();
+        }
+        
+        /* 统计填空个数 */
+        function countFillInTheBlank() {
+            $('#countBlank').val($('#option .btn-group').length);
         }
 
         /* 初始化选项 */
@@ -397,34 +444,36 @@
                 });
             </script>
             @elseif(  $context['status']['type'] == 'FillInTheBlank' )      {{-- 填空题 --}}
-            <div class="mt-20" id="option">
+            <input id="countBlank" name="countBlank" value="{{ old('option') ? count(old('option')) : '' }}" type="hidden">
+            <div class="mt-20 cl" id="option">
                 {{-- 填空题答案 --}}
-                {{--<div id="option_content_A" class="btn-group cl mb-10" data-content="A">
-                    <a class="btn btn-secondary radius f-l" style="width: 36px;">A</a>
-                    <input type="text" name="option[A]" class="input-text radius f-l" style="width: 300px;">
-                    <a style="text-decoration:none" class="btn btn-danger radius f-l" onClick="batchDeletion('del')" href="javascript:;" title="删除">
-                        <i class="Hui-iconfont Hui-iconfont-del2"> </i>
-                    </a>
-                </div>
-                <div id="option_content_B" class="btn-group cl mb-10" data-content="B">
-                    <a class="btn btn-secondary radius f-l" style="width: 36px;">B</a>
-                    <input type="text" name="option[B]" class="input-text radius f-l" style="width: 300px;">
-                    <a style="text-decoration:none" class="btn btn-danger radius f-l" onClick="batchDeletion('del')" href="javascript:;" title="删除">
-                        <i class="Hui-iconfont Hui-iconfont-del2"> </i>
-                    </a>
-                </div>--}}
+                <span class="ml-40 c-error" id="option_error"></span>
             </div>
             <input id="addOption" type="button" onclick="addOptions('#option')" class="btn btn-success-outline radius btn-block mt-10" value="添加一个选项">
             <script>
                 $(function () {
                     getUeditor('description', '{!! old('description') !!}');
                     getUeditor('analysis', '{!! old('analysis') !!}');
-                    //追加失去焦点事件
+
+                    var divObj = '#option';
+                    @for($i=65;$i<( null !== old('option') ? count(old('option')) : 0) +65;$i++)
+                        var word = String.fromCharCode({{ $i }});
+                        var divHtml = "<div id=\"option_content_"+ word +"\" class=\"btn-group cl mb-10 f-l mr-20\" data-content='"+ word +"'>" +
+                            "<a class=\"btn btn-secondary radius f-l\" style=\"width: 36px\">"+ word +"</a>" +
+                            "<input type=\"text\" name=\"option["+ word +"]\" class=\"input-text f-l\" style=\"width: 300px;\" value=\"{{ old('option')[chr($i)] }}\">" +
+                            "<a style=\"text-decoration:none\" class=\"btn btn-danger radius f-l\" onClick=\"deleteFillInTheBlank(this)\" href=\"javascript:;\" title=\"删除\">" +
+                            "<i class=\"Hui-iconfont Hui-iconfont-del2\"> </i>" +
+                            "</a>" +
+                            "</div>";
+                        $(divHtml).appendTo($(divObj));
+                    @endfor
+
+                    //追加失去焦点事件( 当编辑器内容有所改变，同步下方答案填写处改变，编辑器内填空序号按顺序排列 )
                     UE.getEditor('description').addListener('blur',function () {
                         var ue = UE.getEditor('description');
                         var ueObj = $(ue.getContent());
                         var ueOptionCount = ueObj.find('input[type=button]').length;
-                        var realOptionCount = $('#option .btn-group').length
+                        var realOptionCount = $('#option .btn-group').length;
                         if(ueOptionCount < realOptionCount){
                             //遍历编辑器内答案数，同步删除下方按钮数
                             for(var code=65;code<65+realOptionCount;code++){
@@ -459,17 +508,14 @@
                                 temp += this.outerHTML;
                             });
                             ue.setContent(temp);
+                            countFillInTheBlank();
                         }
-                        // console.log(ueOptionCount,realOptionCount);
-                        // console.log($(ue.getContent())[0].outerHTML);
                     });
                     var length = 0;
-                    // initOption(65 + length);
                     @for($i=65;$i<67;$i++)
                     $('#option_error_' + '{{ chr($i) }}').html('{{ $errors->first('option.'.chr($i)) }}');
                     @endfor
-                    $('#option_error').html('{{ $errors->first('option_radio') }}');
-                    $('#option_{{ old('option_radio') }}').find('div').eq(0).click();
+                    $('#option_error').html('{{ $errors->first('countBlank') }} {{ $errors->first('option') }}');
                 });
             </script>
             @elseif(  $context['status']['type'] == 'ShortAnswer' )         {{-- 简答题 --}}
