@@ -485,7 +485,6 @@
                             //遍历编辑器内按钮顺序
                             var word = 'A';
                             ueObj.find('input[type=button]').each(function () {
-                                // console.log($(this).attr('id'))
                                 $(this).attr('id','option_'+word);
                                 $(this).val('填空'+word);
                                 $(this).data('content',word);

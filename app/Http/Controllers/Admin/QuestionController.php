@@ -14,9 +14,14 @@ use function PHPSTORM_META\type;
 
 class QuestionController extends Controller
 {
+    /**
+     * 中间件验证是否登录
+     *
+     * QuestionController constructor.
+     */
     public function __construct()
     {
-//        $this->middleware('auth');
+        $this->middleware('auth:admin');
     }
 
     public function guest()

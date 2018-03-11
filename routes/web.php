@@ -53,3 +53,10 @@ Route::group(['prefix' => 'admin/question'], function () {
     Route::post('statusQuestion/{id?}', 'Admin\QuestionController@statusQuestion'); //删除试题
     Route::get('previewQuestion/{id?}', 'Admin\QuestionController@previewQuestion'); //预览试题
 });
+
+/**
+ * 试卷管理
+ */
+Route::group(['prefix' => 'admin/paper'],function (){
+    Route::get('addPaper/','Admin\PaperController@addPaper');   //添加试卷
+});

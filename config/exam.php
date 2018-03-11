@@ -13,9 +13,14 @@ return [
     */
     'list_name' => [
         'admin' => '首页',
+
         'question' => '试题管理',
         'addQuestion' => '添加试题',
         'manageQuestion' => '管理试题',
+
+        'paper' => '试卷管理',
+        'addPaper' => '添加试卷',
+        'managePaper' => '管理试卷',
     ],
 
     /*

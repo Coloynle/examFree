@@ -110,8 +110,8 @@
             <dt><i class="Hui-iconfont">&#xe613;</i> 试卷管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="picture-list.html" data-title="添加试卷" href="javascript:void(0)">添加试卷</a></li>
-                    <li><a data-href="picture-list.html" data-title="管理试卷" href="javascript:void(0)">管理试卷</a></li>
+                    <li><a data-href="{{ url('admin/paper/addPaper/') }}" data-title="添加试卷" href="javascript:void(0)">添加试卷</a></li>
+                    <li><a data-href="{{ url('admin/paper/managePaper/') }}" data-title="管理试卷" href="javascript:void(0)">管理试卷</a></li>
                 </ul>
             </dd>
         </dl>

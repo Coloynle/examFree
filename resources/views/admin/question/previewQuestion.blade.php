@@ -39,10 +39,14 @@
     @foreach($question[0] as $item => $value)
         @if($item == 'description' || $item == 'analysis')
             <div class="panel panel-secondary-change mt-20 mb-20 radius">
+                @if($item == 'description')
                 <div class="panel-header">试题描述</div>
-                <div class="panel-body">{!! $value !!}</div>
+                @else
+                <div class="panel-header">试题讲解</div>
+                @endif
+                <div class="panel-body" id="{{ $item }}">{!! $value !!}</div>
             </div>
-        @elseif($item == 'answer_info')
+        @elseif($item == 'answer_info' && $question[0]['type'] != 'FillInTheBlank')
             @foreach($value as $ite => $val)
                 @if(($question[0]['type'] == 'MultipleChoice' && in_array($ite,$question[0]['answer'])) || (($question[0]['type'] == 'SingleChoice' || $question[0]['type'] == 'TrueOrFalse') && $ite == $question[0]['answer']))
                     {{-- 如果选项是正确答案 --}}
@@ -58,9 +62,24 @@
                     </div>
                 @endif
             @endforeach
+        @elseif($question[0]['type'] == 'FillInTheBlank' && $item == 'answer_info')
+            @foreach($value as $ite => $val)
+            <input type="hidden" id="option_answer_info_{{ $ite }}" value="{{ $val }}">
+            @endforeach
         @endif
     @endforeach
 </div>
+<script>
+    $(function () {
+       $('#description input').each(function () {
+           $(this).attr('type','text');
+           $(this).val($('#option_answer_info_'+$(this).data('content')).val());
+           $(this).attr('class','input-text f-l');
+           $(this).attr('disabled','true');
+           $(this).attr('style','width:200px;margin:0 5px')
+       })
+    });
+</script>
 
 {{--<script type="text/javascript" src="{{ asset('js/app.js') }}"></script>--}}
 <script type="text/javascript" src="{{ asset('h-ui/lib/layer/2.4/layer.js') }}"></script>
