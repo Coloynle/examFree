@@ -46,12 +46,13 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['prefix' => 'admin/question'], function () {
     Route::get('addQuestion/{type}/{id?}', 'Admin\QuestionController@addQuestion'); //添加试题
     Route::post('createQuestion/', 'Admin\QuestionController@createQuestion');      //创建试题方法
-    Route::get('manageQuestion/', 'Admin\QuestionController@manageQuestion');       //管理试题初始
+    Route::get('manageQuestion/{breadcrumbTop?}', 'Admin\QuestionController@manageQuestion');       //管理试题初始
     Route::post('manageQuestion/', 'Admin\QuestionController@manageQuestion');      //管理试题条件搜索
     Route::get('changeQuestion/{id}', 'Admin\QuestionController@changeQuestion');   //修改试题
     Route::post('deleteQuestion/{id?}', 'Admin\QuestionController@deleteQuestion'); //删除试题
     Route::post('statusQuestion/{id?}', 'Admin\QuestionController@statusQuestion'); //删除试题
     Route::get('previewQuestion/{id?}', 'Admin\QuestionController@previewQuestion'); //预览试题
+    Route::post('getQuestionById/', 'Admin\QuestionController@getQuestionById'); //通过试题ID获取试题信息JSON数组（AJAX）
 });
 
 /**
@@ -59,4 +60,5 @@ Route::group(['prefix' => 'admin/question'], function () {
  */
 Route::group(['prefix' => 'admin/paper'],function (){
     Route::get('addPaper/','Admin\PaperController@addPaper');   //添加试卷
+    Route::post('savePaper/','Admin\PaperController@savePaper');   //保存试卷
 });

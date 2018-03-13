@@ -429,11 +429,7 @@
                 $(function () {
                     getUeditor('description', '{!! old('description') !!}');
                     getUeditor('analysis', '{!! old('analysis') !!}');
-                    @if(Session::has('_old_input'))
-                    var length = parseInt('{{ count(old('option')) }}');
-                    @else
-                    var length = 0;
-                    @endif
+                    var length = 2;
                     initOption(65 + length);
                     @for($i=65;$i<67;$i++)
                     getUeditor('option_content_' + '{{ chr($i) }}', '{!! old('option')[chr($i)] !!}');

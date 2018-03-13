@@ -17,6 +17,7 @@ class CreatePapersTable extends Migration
             $table->increments('id')->comment('自增长主键');
             $table->string('name')->comment('试卷名称');
             $table->string('type')->comment('试卷分类');
+            $table->integer('total_score')->comment('试卷总分');
             $table->integer('passing_score')->comment('及格分数');
             $table->text('content')->comment('试卷内容');
             $table->integer('create_user_id')->comment('创建者的ID');

@@ -74,7 +74,7 @@
        $('#description input').each(function () {
            $(this).attr('type','text');
            $(this).val($('#option_answer_info_'+$(this).data('content')).val());
-           $(this).attr('class','input-text f-l');
+           $(this).attr('class','input-text');
            $(this).attr('disabled','true');
            $(this).attr('style','width:200px;margin:0 5px')
        })

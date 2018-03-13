@@ -5,9 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Question extends Model
+class Paper extends Model
 {
-    //启用软删除
     use SoftDeletes;
 
     /**
@@ -33,7 +32,6 @@ class Question extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      * @author CJ
      */
-
     public function getCreateUserName(){
         return $this->belongsTo('App\Admin','create_user_id','id');
     }
@@ -58,12 +56,12 @@ class Question extends Model
      * @author CJ
      */
     private function searchByParams($params = []){
-        $select = new Question();
+        $select = new Paper();
         //试题ID条件
         if(!empty($params['id'])){
             $select = $select->where('id','=',$params['id']);
         }
-        //试题描述条件
+        //试卷
         if(!empty($params['description'])){
             $select = $select->where('description','like','%'.$params['description'].'%');
         }

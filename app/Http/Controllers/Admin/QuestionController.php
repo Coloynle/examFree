@@ -61,7 +61,9 @@ class QuestionController extends Controller
      */
     public function createQuestion(Request $request)
     {
+        //将要保存的数据
         $parameter = $request->all();
+        //处理后验证的数据
         $parameters = $request->all();
         $parameters['description'] = strip_tags($parameters['description']);
         $parameters['analysis'] = strip_tags($parameters['analysis']);
@@ -100,7 +102,8 @@ class QuestionController extends Controller
             $vaildateName['option_radio'] = '试题选项';
 
             //验证表单
-            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
+            $validator = \Validator::make($parameters,$vaildatedData,$vailErrorInfo,$vaildateName)->validate();
+//            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
 
             if (!isset($parameters['option'][$parameters['option_radio']])) {
                 echo '正确答案不存在';
@@ -121,14 +124,8 @@ class QuestionController extends Controller
 
 
             //验证表单
-            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
-
-//            foreach ($parameters['option_checkbox'] as $item => $value) {
-//                if (!isset($parameters['option'][$value])) {
-//                    echo '正确答案不存在';
-//                    return;
-//                }
-//            }
+            $validator = \Validator::make($parameters,$vaildatedData,$vailErrorInfo,$vaildateName)->validate();
+//            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
             $type = 'checkbox';
             $parameter['option_checkbox'] = serialize($parameters['option_checkbox']);
 
@@ -142,7 +139,8 @@ class QuestionController extends Controller
             $vaildatedData['option_radio'] = "bail|required";
             $vaildateName['option_radio'] = '试题选项';
             //验证表单
-            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
+            $validator = \Validator::make($parameters,$vaildatedData,$vailErrorInfo,$vaildateName)->validate();
+//            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
 
             if (!isset($parameters['option'][$parameters['option_radio']])) {
                 echo '正确答案不存在';
@@ -166,8 +164,6 @@ class QuestionController extends Controller
             $vaildateName['option'] = "填空个数";
             $vailErrorInfo['min'] = ' :attribute 必须大于一个';
             $validator = \Validator::make($parameters,$vaildatedData,$vailErrorInfo,$vaildateName)->validate();
-
-
 //            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
             $parameter['option_blank'] = 'ALL';
             $type = 'blank';
@@ -178,7 +174,8 @@ class QuestionController extends Controller
                 $vaildateName[$key] = '填空' . $item . '答案';
 
             }
-            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
+            $validator = \Validator::make($parameters,$vaildatedData,$vailErrorInfo,$vaildateName)->validate();
+//            $request->validate($vaildatedData, $vailErrorInfo, $vaildateName);
 
             $parameter['option_short'] = 'ALL';
             $type = 'short';
@@ -281,11 +278,12 @@ class QuestionController extends Controller
      * 管理试题
      *
      * @function manageQuestion
+     * @param bool $breadcrumbTop
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @author CJ
      */
-    public function manageQuestion(Request $request)
+    public function manageQuestion($breadcrumbTop = false,Request $request)
     {
         //关联查询admins表,获取name,并进行分页
         $questions = new Question;
@@ -293,7 +291,7 @@ class QuestionController extends Controller
         return view('admin/question/manageQuestion', [
             'questions' => $questions,
             'params' => self::initParams(),
-            'context' => ['status' => ['breadcrumbTop' => false]]
+            'context' => ['status' => ['breadcrumbTop' => $breadcrumbTop]]
         ]);
     }
 
@@ -350,6 +348,13 @@ class QuestionController extends Controller
         return;
     }
 
+    /**
+     * 改变试题状态
+     *
+     * @function statusQuestion
+     * @return array
+     * @author CJ
+     */
     public function statusQuestion(){
         //获取试题类型
         $Type = Input::get('type', '');
@@ -437,6 +442,41 @@ class QuestionController extends Controller
         elseif ($_old_input['type'] == 'SingleChoice' || $_old_input['type'] == 'TrueOrFalse')
             $_old_input['option_radio'] = $_old_input['answer'];
         return redirect('/admin/question/addQuestion/'.$_old_input["type"].'/'.$id)->with('_old_input', $_old_input);
+    }
+
+    /**
+     * 通过试题ID返回试题信息
+     *
+     * @function getQuestionById
+     * @return string
+     * @author CJ
+     */
+    public function getQuestionById(){
+        $questionsId = Input::get('questionsId', '');
+        $questionsId = explode(',', $questionsId);
+        $questions = new Question();
+        $questionsInfo = $questions->getQuestionForId($questionsId);
+        $questionsInfo = self::arrangeQuestionInfo($questionsInfo);
+        return json_encode($questionsInfo);
+    }
+
+    /**
+     * 返回整理后的试题数组
+     *
+     * @function arrangeQuestionInfo
+     * @param array $questionsInfo
+     * @return array
+     * @author CJ
+     */
+    private function arrangeQuestionInfo($questionsInfo = []){
+        foreach ($questionsInfo as $item => $value){
+            $questionsInfo[$item]['answer_info'] = unserialize($questionsInfo[$item]['answer_info']);
+            if($questionsInfo[$item]['type'] == 'MultipleChoice'){
+                $questionsInfo[$item]['answer'] = unserialize($questionsInfo[$item]['answer']);
+            }
+            $questionsInfo[$item]['type'] = config('exam.question_type.'.$questionsInfo[$item]['type']);
+        }
+        return $questionsInfo;
     }
 
 
