@@ -3,11 +3,47 @@
     <div class="page-container">
         <form method="POST">
             {{ csrf_field() }}
-            <input name="paperName" type="text" class="input-text radius" placeholder="试卷名称">
-            <input name="paperScore" type="number" min="0" class="input-text radius mt-20" value="0" disabled style="width: 10%;" placeholder="试卷总分：自动累加">
-            <input name="paperPass" type="number" min="0" class="input-text radius mt-20" style="width: 10%;" placeholder="及格分数">
-            <input name="paperType" type="text" class="input-text radius mt-20" style="width: 10%;" placeholder="试卷分类">
+            <input name="paperName" type="text" class="input-text radius" placeholder="试卷名称" value="{{ old('name') }}">
+            <input name="paperScore" type="number" min="0" class="input-text radius mt-20" disabled style="width: 10%;" placeholder="试卷总分：自动累加" value="{{ old('total_score') }}">
+            <input name="paperPass" type="number" min="0" class="input-text radius mt-20" style="width: 10%;" placeholder="及格分数" value="{{ old('passing_score') }}">
+            <input name="paperType" type="text" class="input-text radius mt-20" style="width: 10%;" placeholder="试卷分类" value="{{ old('type') }}">
             <div id="paper_content" class="mt-20">
+                {{-- 编辑试卷时初始化试卷内容 --}}
+                @if( null != old('id'))
+                    <input name="paperId" type="hidden" value="{{ old('id') }}">
+                    @foreach( old('content') as $item => $value)
+                        <div class="panel panel-success mt-10">
+                            <div class="panel-header cl">
+                                <input name="name" type="text" class="input-text radius" style="width: 90%;" placeholder="大题描述" value="{{ $item }}">
+                                <a style="text-decoration:none" class="btn btn-danger radius f-r ml-5" onClick="delMainQuestion(this);" href="javascript:;" title="删除">
+                                    <i class="Hui-iconfont Hui-iconfont-del2"> </i>
+                                </a>
+                                <input name="eachNum" type="number" min="0" class="input-text radius f-r" style="width: 5%;" placeholder="小题分数">
+                            </div>
+                            <div class="panel-body">
+                                {{-- 小题题号 --}}
+                                <?php $questionNum=1; ?>
+                                {{-- 遍历小题信息 --}}
+                                @foreach( $value as $questionId => $content)
+                                    <div class="panel-body">
+                                        <div class="cl">
+                                            <span class="badge badge-secondary radius mt-5" name="questionNum"><?php echo $questionNum++; ?></span>
+                                            <span class="label label-default radius mt-5 ml-10">{{ $content['type'] }}</span>
+                                            <a style="text-decoration:none" class="badge badge-danger radius mt-5 f-r" onClick="delSecondaryQuestion(this);" href="javascript:;" title="删除">
+                                                <i class="Hui-iconfont Hui-iconfont-del2"></i>
+                                            </a>
+                                            <input type="number" min="0" class="input-text radius f-r mr-15" onblur="totalScoreAuto();" value="{{ $content['score'] }}" name="{{ $questionId }}" style="width: 100px" placeholder="试题分数">
+                                        </div>
+                                        <div class="panel-body">
+                                            {!! $content['description'] !!}
+                                        </div>
+                                    </div>
+                                @endforeach
+                                <input name="name" type="button" class="btn btn-primary radius" onclick='secondaryQuestionLayer(this);' value="选择试题">
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
             <div class="text-c">
                 <input name="name" type="button" class="btn btn-primary radius mt-20" onclick="addMainQuestion();" value="添加一道大题">
@@ -22,7 +58,7 @@
                 checkboxClass: 'icheckbox-grey t-2',
                 radioClass: 'iradio-grey t-2',
                 increaseArea: '20%'
-            })
+            });
         });
 
         //AJAX TOKEN初始化
@@ -79,17 +115,17 @@
                         'url': '{{ url('admin/question/getQuestionById') }}',
                         'dataType': 'JSON',
                         'success': function (data) {
-                            $.each(data, function (key,question) {
+                            $.each(data, function (key, question) {
                                 //获取小题题号
                                 var questionNum = ++$(that).parent().find('span[name=questionNum]').length;
                                 var divHtml = "<div class=\"panel-body\">" +
                                     "<div class=\"cl\">" +
-                                    "<span class=\"badge badge-secondary radius mt-5\" name=\"questionNum\">"+ questionNum +"</span>" +
+                                    "<span class=\"badge badge-secondary radius mt-5\" name=\"questionNum\">" + questionNum + "</span>" +
                                     "<span class=\"label label-default radius mt-5 ml-10\">" + question.type + "</span>\n" +
                                     "<a style=\"text-decoration:none\" class=\"badge badge-danger radius mt-5 f-r\" onClick=\"delSecondaryQuestion(this);\" href=\"javascript:;\" title=\"删除\">" +
                                     "<i class=\"Hui-iconfont Hui-iconfont-del2\"> </i>\n" +
                                     "</a>" +
-                                    "<input type=\"number\" min=\"0\" class=\"input-text radius f-r mr-15\" onblur=\"totalScoreAuto();\" value=\""+ $(that).parent().parent().find('input[name=eachNum]').val() +"\" name=\"" + question.id + "\" style=\"width: 100px\" placeholder=\"试题分数\">" +
+                                    "<input type=\"number\" min=\"0\" class=\"input-text radius f-r mr-15\" onblur=\"totalScoreAuto();\" value=\"" + $(that).parent().parent().find('input[name=eachNum]').val() + "\" name=\"" + question.id + "\" style=\"width: 100px\" placeholder=\"试题分数\">" +
                                     "</div>" +
                                     "<div class=\"panel-body\">" +
                                     question.description +
@@ -100,6 +136,7 @@
                             totalScoreAuto();
                         }
                     });
+                    layer.close(index);
                 },
                 area: ['1500px', '700px'],
                 content: '{{ url('admin/question/manageQuestion/true') }}'
@@ -112,7 +149,7 @@
             var parentDom = $(that).parent().parent();
             //获取当前父节点后全部兄弟节点，并改变题号
             parentDom.nextAll().each(function () {
-               $(this).find('span[name=questionNum]').html($(this).find('span[name=questionNum]').html()-1);
+                $(this).find('span[name=questionNum]').html($(this).find('span[name=questionNum]').html() - 1);
             });
             //移除节点
             parentDom.remove();
@@ -132,19 +169,20 @@
         function savePaper() {
             var data = {};
             data.content = {};
+            data.paperId = $('input[name=paperId]').val() || '';
             data.name = $('input[name=paperName]').val();
             data.total_score = $('input[name=paperScore]').val();
             data.passing_score = $('input[name=paperPass]').val();
             data.type = $('input[name=paperType]').val();
 
             $('#paper_content').children().each(function () {
-               var key = $(this).find('input[name=name]').val();
+                var key = $(this).find('input[name=name]').val();
                 data.content[key] = {};
-               $(this).find('input[type=number]').each(function () {
-                   if($(this).attr('name') != 'eachNum'){
-                       data.content[key][$(this).attr('name')] = $(this).val();
-                   }
-               })
+                $(this).find('input[type=number]').each(function () {
+                    if ($(this).attr('name') != 'eachNum') {
+                        data.content[key][$(this).attr('name')] = $(this).val();
+                    }
+                })
             });
 
             $.ajax({
@@ -153,8 +191,14 @@
                 'url': '{{ url('admin/paper/savePaper') }}',
                 'dataType': 'JSON',
                 'success': function (data) {
-                    window.location.reload();
-                    Huimodalalert(data.message,2000);
+                    $.Huimodalalert(data.message, 1500);
+                    setTimeout(function () {
+                        if(data.code == 2){
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index)
+                        }
+                        window.location.reload();
+                    }, 1500);
                 }
             })
             // console.log($('#paper_content').children());

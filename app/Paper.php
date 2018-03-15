@@ -57,19 +57,19 @@ class Paper extends Model
      */
     private function searchByParams($params = []){
         $select = new Paper();
-        //试题ID条件
+        //试卷ID条件
         if(!empty($params['id'])){
             $select = $select->where('id','=',$params['id']);
         }
-        //试卷
-        if(!empty($params['description'])){
-            $select = $select->where('description','like','%'.$params['description'].'%');
+        //试卷名称
+        if(!empty($params['name'])){
+            $select = $select->where('name','like','%'.$params['name'].'%');
         }
-        //试题类型条件
+        //试卷分类条件
         if(!empty($params['type'])){
             $select = $select->where('type','=',$params['type']);
         }
-        //试题状态条件
+        //试卷状态条件
         if(isset($params['status']) && $params['status'] != ''){
             $select = $select->where('status','=',(int)$params['status']);
         }
@@ -101,36 +101,36 @@ class Paper extends Model
         if(!empty($params['updated_time_end'])){
             $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
         }
-        //试题ID排序
+        //试卷ID排序
         if(!empty($params['order_by_id'])){
             $select = $select->orderBy('id',$params['order_by_id']);
         }
-        //试题类型排序
+        //试卷分类排序
         if(!empty($params['order_by_type'])){
             $select = $select->orderBy('type',$params['order_by_type']);
         }
-        //试题状态排序
+        //试卷状态排序
         if(!empty($params['order_by_status'])){
             $select = $select->orderBy('status',$params['order_by_status']);
         }
-        //试题创建者排序
+        //试卷创建者排序
         if(!empty($params['order_by_create_user_name'])){
             $select = $select->orderBy('create_user_id',$params['order_by_create_user_name']);
         }
-        //试题修改者排序
+        //试卷修改者排序
         if(!empty($params['order_by_update_user_name'])){
             $select = $select->orderBy('update_user_id',$params['order_by_update_user_name']);
         }
-        //试题创建时间排序
+        //试卷创建时间排序
         if(!empty($params['order_by_created_time'])){
             $select = $select->orderBy('created_at',$params['order_by_created_time']);
         }
-        //试题修改时间排序
+        //试卷修改时间排序
         if(!empty($params['order_by_updated_time'])){
             $select = $select->orderBy('updated_at',$params['order_by_updated_time']);
         }
-        $question = $select->with(['getCreateUserName:id,name','getUpdateUserName:id,name']);
-        return $question;
+        $paper = $select->with(['getCreateUserName:id,name','getUpdateUserName:id,name']);
+        return $paper;
     }
 
     /**
@@ -147,7 +147,7 @@ class Paper extends Model
     }
 
     /**
-     * 通过检索条件删除试题
+     * 通过检索条件删除试卷
      *
      * @function searchDelete
      * @param array $params
@@ -159,53 +159,53 @@ class Paper extends Model
     }
 
     /**
-     * 获得试题信息
+     * 获得试卷信息
      *
-     * @function getQuestion
+     * @function getPaper
      * @param array $params
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      * @author CJ
      */
-    public function getQuestion($params = []){
+    public function getPaper($params = []){
         return self::searchByParams($params)->get()->toArray();
     }
 
     /**
-     * 通过试题ID获取试题信息 (状态为上架)
+     * 通过试卷ID获取试卷信息 (状态为上架)
      *
-     * @function getQuestionForId
-     * @param $questionsId
+     * @function getPaperForId
+     * @param $papersId
      * @return mixed
      * @author CJ
      */
-    public function getQuestionForId($questionsId){
-        return self::whereIn('id',$questionsId)->where('status','=',0)->get()->toArray();
+    public function getPaperForId($papersId){
+        return self::whereIn('id',$papersId)->where('status','=',0)->get()->toArray();
     }
 
     /**
-     * 通过试题ID更新试题状态
+     * 通过试卷ID更新试卷状态
      *
-     * @function updateStatusQuestionForId
-     * @param $questionsId
+     * @function updateStatusPaperForId
+     * @param $papersId
      * @param $status
      * @return mixed
      * @author CJ
      */
-    public function updateStatusQuestionForId($questionsId,$status){
-        return self::whereIn('id',$questionsId)->update(['status' => $status]);
+    public function updateStatusPaperForId($papersId,$status){
+        return self::whereIn('id',$papersId)->update(['status' => $status]);
     }
 
 
     /**
-     * 通过试题检索条件更新试题状态
+     * 通过试卷检索条件更新试卷状态
      *
-     * @function updateStatusQuestionForParams
+     * @function updateStatusPaperForParams
      * @param array $params
      * @param $status
      * @return bool|int
      * @author CJ
      */
-    public function updateStatusQuestionForParams($params = [],$status){
+    public function updateStatusPaperForParams($params = [],$status){
         return self::searchByParams($params)->update(['status' => $status]);
     }
 }

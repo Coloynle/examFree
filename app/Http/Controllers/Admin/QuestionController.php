@@ -425,7 +425,9 @@ class QuestionController extends Controller
 
     /**
      * 修改试题
+     *
      * @function changeQuestion
+     * @param null $id
      * @return \Illuminate\Http\RedirectResponse
      * @author CJ
      */
@@ -468,7 +470,7 @@ class QuestionController extends Controller
      * @return array
      * @author CJ
      */
-    private function arrangeQuestionInfo($questionsInfo = []){
+    public function arrangeQuestionInfo($questionsInfo = []){
         foreach ($questionsInfo as $item => $value){
             $questionsInfo[$item]['answer_info'] = unserialize($questionsInfo[$item]['answer_info']);
             if($questionsInfo[$item]['type'] == 'MultipleChoice'){

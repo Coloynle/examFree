@@ -59,6 +59,12 @@ Route::group(['prefix' => 'admin/question'], function () {
  * 试卷管理
  */
 Route::group(['prefix' => 'admin/paper'],function (){
-    Route::get('addPaper/','Admin\PaperController@addPaper');   //添加试卷
+    Route::get('addPaper/{id?}','Admin\PaperController@addPaper');   //添加试卷
     Route::post('savePaper/','Admin\PaperController@savePaper');   //保存试卷
+    Route::get('managePaper/{breadcrumbTop?}','Admin\PaperController@managePaper');   //管理试卷
+    Route::post('managePaper/','Admin\PaperController@managePaper');   //管理试卷条件搜索
+    Route::get('changePaper/{id}', 'Admin\PaperController@changePaper');   //修改试卷
+    Route::post('deletePaper/{id?}', 'Admin\PaperController@deletePaper'); //删除试卷
+    Route::post('statusPaper/{id?}', 'Admin\PaperController@statusPaper'); //删除试卷
+    Route::get('previewPaper/{id?}', 'Admin\PaperController@previewPaper'); //预览试卷
 });
