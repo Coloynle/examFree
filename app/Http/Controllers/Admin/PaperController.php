@@ -241,19 +241,11 @@ class PaperController extends Controller
      */
     public function previewPaper($id = null)
     {
+        $questionController = new QuestionController();
         $papers = new Paper();
         $papers = $papers->getPaper([
             'id' => $id
         ]);
-        //将试卷选项排序
-        foreach ($papers as $key => $value) {
-            $papers[$key]['answer_info'] = unserialize($value['answer_info']);
-            ksort($papers[$key]['answer_info']);
-            if($papers[$key]['type'] == 'MultipleChoice'){
-                $papers[$key]['answer'] = unserialize($value['answer']);
-                ksort($papers[$key]['answer']);
-            }
-        }
 
         //如果没有找到返回试卷不存在
         if(empty($papers)){
@@ -262,8 +254,30 @@ class PaperController extends Controller
                 'message' => '试卷不存在'
             ]);
         }
+
+        $papers[0]['content'] = unserialize($papers[0]['content']);
+//        dd($papers[0]['content']);
+        foreach ($papers[0]['content'] as $item => $value){
+            foreach ($value as $questionId => $score){
+                $question = new Question();
+                $temp = [];
+                $temp = $question->getQuestionForId([$questionId]);
+                //如果试题没有找到（被删除）返回试卷不完整
+                if(empty($temp)){
+                    return redirect('/admin/paper/managePaper/')->with([
+                        'code' => '-2',
+                        'message' => '试卷不完整(试题ID'.$questionId.'被下架或删除)'
+                    ]);
+                }
+                $temp = $questionController->arrangeQuestionInfo($temp);
+                $papers[0]['content'][$item][$questionId] = $temp[0];
+                $papers[0]['content'][$item][$questionId]['score'] = $score;
+            }
+        }
+
+//        dd($papers[0]);
         return view('admin/paper/previewPaper', [
-            'paper' => $papers,
+            'paper' => $papers[0],
         ]);
     }
 
@@ -279,6 +293,7 @@ class PaperController extends Controller
     {
         $questionController = new QuestionController();
         $paper = new Paper();
+        //获取试卷数据
         $paper = $paper->getPaper([
             'id' => $id
         ]);
@@ -296,7 +311,6 @@ class PaperController extends Controller
                 $_old_input['content'][$item][$questionId]['description'] = $temp[0]['description'];
             }
         }
-//        dd($_old_input);
         return redirect('/admin/paper/addPaper/'.$id)->with('_old_input', $_old_input);
     }
 

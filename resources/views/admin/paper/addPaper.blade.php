@@ -47,7 +47,7 @@
             </div>
             <div class="text-c">
                 <input name="name" type="button" class="btn btn-primary radius mt-20" onclick="addMainQuestion();" value="添加一道大题">
-                <input name="name" type="button" class="btn btn-primary radius mt-20 ml-50" onclick="savePaper();" value="保存试卷">
+                <input name="name" type="button" class="btn btn-primary radius mt-20 ml-50" onclick="savePaper(this);" value="保存试卷">
             </div>
         </form>
     </div>
@@ -166,30 +166,69 @@
         }
 
         //保存试卷
-        function savePaper() {
+        function savePaper(that) {
+            //退出each循环后终止方法标志位
+            var flag = false;
+
+            //判断是否存在一道小题
+            var existQuestion = false;
+
             var data = {};
             data.content = {};
             data.paperId = $('input[name=paperId]').val() || '';
-            data.name = $('input[name=paperName]').val();
-            data.total_score = $('input[name=paperScore]').val();
-            data.passing_score = $('input[name=paperPass]').val();
-            data.type = $('input[name=paperType]').val();
+            data.name = $('input[name=paperName]').val() || '';
+            data.total_score = $('input[name=paperScore]').val() || '';
+            data.passing_score = $('input[name=paperPass]').val() || '';
+            data.type = $('input[name=paperType]').val() || '';
+
+            if(data.name == ''){
+                $.Huimodalalert('试卷名称必填', 1500);
+                return false;
+            }else if(data.passing_score == ''){
+                $.Huimodalalert('及格分数必填', 1500);
+                return false;
+            }else if(data.type == ''){
+                $.Huimodalalert('试卷分类必填', 1500);
+                return false;
+            }else if($('#paper_content').children().length == 0){
+                $.Huimodalalert('至少有一道大题', 1500);
+                return false;
+            }
 
             $('#paper_content').children().each(function () {
                 var key = $(this).find('input[name=name]').val();
+                if(key == ''){
+                    $.Huimodalalert('大题描述必填', 1500);
+                    flag = true;
+                    return false;
+                }
                 data.content[key] = {};
                 $(this).find('input[type=number]').each(function () {
                     if ($(this).attr('name') != 'eachNum') {
+                        existQuestion = true;
+                        if($(this).val() == ''){
+                            $.Huimodalalert('试题分数必填', 1500);
+                            flag = true;
+                            return false;
+                        }
                         data.content[key][$(this).attr('name')] = $(this).val();
                     }
-                })
+                });
+                if(!existQuestion){
+                    $.Huimodalalert('必须存在一道小题', 1500);
+                }
             });
-
+            if(flag || !existQuestion){
+                return false;
+            }
             $.ajax({
                 'type': 'POST',
                 'data': data,
                 'url': '{{ url('admin/paper/savePaper') }}',
                 'dataType': 'JSON',
+                'beforeSend': function () {
+                    $(that).attr('disabled', 'disabled');
+                },
                 'success': function (data) {
                     $.Huimodalalert(data.message, 1500);
                     setTimeout(function () {
@@ -201,7 +240,6 @@
                     }, 1500);
                 }
             })
-            // console.log($('#paper_content').children());
         }
     </script>
 @endsection

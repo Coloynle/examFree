@@ -388,19 +388,19 @@ class QuestionController extends Controller
     }
 
     /**
-     * 预览试题
+     * 获取试题处理后数组
      *
-     * @function previewQuestion
+     * @function getQuestionPreview
      * @param null $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Question|array|\Illuminate\Database\Eloquent\Collection|static[]
      * @author CJ
      */
-    public function previewQuestion($id = null)
-    {
+    public function getQuestionPreview($id = null){
         $questions = new Question();
         $questions = $questions->getQuestion([
             'id' => $id
         ]);
+
         //将试题选项排序
         foreach ($questions as $key => $value) {
             $questions[$key]['answer_info'] = unserialize($value['answer_info']);
@@ -410,7 +410,20 @@ class QuestionController extends Controller
                 ksort($questions[$key]['answer']);
             }
         }
+        return $questions;
+    }
 
+    /**
+     * 预览试题
+     *
+     * @function previewQuestion
+     * @param null $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @author CJ
+     */
+    public function previewQuestion($id = null)
+    {
+        $questions = self::getQuestionPreview($id);
         //如果没有找到返回试题不存在
         if(empty($questions)){
             return redirect('/admin/question/manageQuestion/')->with([
@@ -473,8 +486,10 @@ class QuestionController extends Controller
     public function arrangeQuestionInfo($questionsInfo = []){
         foreach ($questionsInfo as $item => $value){
             $questionsInfo[$item]['answer_info'] = unserialize($questionsInfo[$item]['answer_info']);
+            ksort($questionsInfo[$item]['answer_info']);
             if($questionsInfo[$item]['type'] == 'MultipleChoice'){
                 $questionsInfo[$item]['answer'] = unserialize($questionsInfo[$item]['answer']);
+                ksort($questionsInfo[$item]['answer']);
             }
             $questionsInfo[$item]['type'] = config('exam.question_type.'.$questionsInfo[$item]['type']);
         }
