@@ -67,4 +67,13 @@ Route::group(['prefix' => 'admin/paper'],function (){
     Route::post('deletePaper/{id?}', 'Admin\PaperController@deletePaper'); //删除试卷
     Route::post('statusPaper/{id?}', 'Admin\PaperController@statusPaper'); //删除试卷
     Route::get('previewPaper/{id?}', 'Admin\PaperController@previewPaper'); //预览试卷
+    Route::post('getPaperById/', 'Admin\PaperController@getPaperById'); //通过试卷ID获取试卷信息JSON数组（AJAX）
+});
+
+/**
+ * 考试管理
+ */
+Route::group(['prefix' => 'admin/exam'],function (){
+   Route::get('addExam/{id?}','Admin\ExamController@addExam');  //添加考试
+   Route::post('createExam/', 'Admin\ExamController@createExam');   //创建考试方法
 });

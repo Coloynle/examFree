@@ -326,7 +326,6 @@ class PaperController extends Controller
         $papersId = explode(',', $papersId);
         $papers = new Paper();
         $papersInfo = $papers->getPaperForId($papersId);
-        $papersInfo = self::arrangePaperInfo($papersInfo);
         return json_encode($papersInfo);
     }
 

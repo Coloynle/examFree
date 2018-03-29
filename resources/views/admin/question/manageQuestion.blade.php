@@ -23,7 +23,7 @@
                     <input type="hidden" name="type" value="{{ $params['type'] }}">
                     <input type="hidden" name="status" value="{{ $params['status'] }}">
                     <div class="btn-group f-l mr-10 mt-10" id="questionType">
-                        <a class="btn btn-primary radius" href="javascript:;" data-value="" onclick="chooseButton(this,$('input[name=type]'))">全部</a>
+                        <a class="btn btn-default radius" href="javascript:;" data-value="" onclick="chooseButton(this,$('input[name=type]'))">全部</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="SingleChoice" onclick="chooseButton(this,$('input[name=type]'))">单选题</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="MultipleChoice" onclick="chooseButton(this,$('input[name=type]'))">多选题</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="TrueOrFalse" onclick="chooseButton(this,$('input[name=type]'))">判断题</a>
@@ -31,7 +31,7 @@
                         <a class="btn btn-default radius" href="javascript:;" data-value="ShortAnswer" onclick="chooseButton(this,$('input[name=type]'))">简答题</a>
                     </div>
                     <div class="btn-group f-l mr-10 mt-10" id="questionStatus">
-                        <a class="btn btn-primary radius" href="javascript:;" data-value="" onclick="chooseButton(this,$('input[name=status]'))">全部</a>
+                        <a class="btn btn-default radius" href="javascript:;" data-value="" onclick="chooseButton(this,$('input[name=status]'))">全部</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="0" onclick="chooseButton(this,$('input[name=status]'))">已发布</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="1" onclick="chooseButton(this,$('input[name=status]'))">未发布</a>
                     </div>

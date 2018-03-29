@@ -31,7 +31,7 @@
                         <a class="btn btn-default radius" href="javascript:;" data-value="ShortAnswer" onclick="chooseType(this)">简答题</a>
                     </div>--}}
                     <div class="btn-group f-l mr-10 mt-10" id="paperStatus">
-                        <a class="btn btn-primary radius" href="javascript:;" data-value="" onclick="chooseButton(this,$('input[name=status]'))">全部</a>
+                        <a class="btn btn-default radius" href="javascript:;" data-value="" onclick="chooseButton(this,$('input[name=status]'))">全部</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="0" onclick="chooseButton(this,$('input[name=status]'))">已发布</a>
                         <a class="btn btn-default radius" href="javascript:;" data-value="1" onclick="chooseButton(this,$('input[name=status]'))">未发布</a>
                     </div>

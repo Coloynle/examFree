@@ -21,6 +21,10 @@ return [
         'paper' => '试卷管理',
         'addPaper' => '添加试卷',
         'managePaper' => '管理试卷',
+
+        'exam' => '考试管理',
+        'addExam' => '添加考试',
+        'manageExam' => '管理考试',
     ],
 
     /*

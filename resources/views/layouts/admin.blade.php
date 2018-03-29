@@ -119,7 +119,7 @@
             <dt><i class="Hui-iconfont">&#xe620;</i> 考试管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="product-brand.html" data-title="添加考试" href="javascript:void(0)">添加考试</a></li>
+                    <li><a data-href="{{ url('admin/exam/addExam/') }}" data-title="添加考试" href="javascript:void(0)">添加考试</a></li>
                     <li><a data-href="product-list.html" data-title="管理考试" href="javascript:void(0)">管理考试</a></li>
                 </ul>
             </dd>

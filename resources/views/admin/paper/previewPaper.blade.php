@@ -42,13 +42,13 @@
 <div class="page-container">
     @foreach($paper as $item => $value)
         @if($item == 'name')
-            <h2>{{ $value }}</h2>
-        @elseif($item == 'type')
-            <h5>{{ $value }}</h5>
-        @elseif($item == 'total_score')
-            <h5>试卷总分：{{ $value }}</h5>
+            <h2 class="text-c">{{ $value }}</h2>
         @elseif($item == 'passing_score')
-            <h5>及格分数：{{ $value }}</h5>
+            <span class="mr-10">及格分数：{{ $value }}</span>
+        @elseif($item == 'total_score')
+            <span class="mr-10">试卷总分：{{ $value }}</span>
+        @elseif($item == 'type')
+            <span class="mr-10">试卷分类：{{ $value }}</span>
         @elseif($item == 'content')
             @foreach($value as $key => $val)
                 <div class="panel panel-secondary-change mt-10">
