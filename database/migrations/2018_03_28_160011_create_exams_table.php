@@ -22,6 +22,8 @@ class CreateExamsTable extends Migration
             $table->timestamp('exam_time_end')->nullable()->comment('考试结束时间');
             $table->timestamp('apply_time_start')->nullable()->comment('报名开始时间');
             $table->timestamp('apply_time_end')->nullable()->comment('报名结束时间');
+            $table->integer('start_time_type')->comment('考试描述');
+            $table->integer('duration')->comment('考试时长');
             $table->text('description')->comment('考试描述');
             $table->string('paper_id')->comment('试卷ID');
             $table->integer('create_user_id')->comment('创建者的ID');

@@ -52,6 +52,8 @@ class ExamController extends Controller
             'exam_time_end' => '考试结束时间',
             'apply_time_start' => '报名开始时间',
             'apply_time_end' => '报名结束时间',
+            'start_time_type' => '考试时间计算类别',
+            'duration' => '考试时长',
             'description' => '考试描述',
             'paper_id' => '试卷',
         ];
@@ -70,6 +72,8 @@ class ExamController extends Controller
             $vaildatedData['apply_time_start'] = "bail|required";
             $vaildatedData['apply_time_end'] = "bail|required";
         }
+        $vaildatedData['start_time_type'] = "bail|required";
+        $vaildatedData['duration'] = "bail|required";
         $vaildatedData['description'] = "bail|required|max:30000";
         $vaildatedData['paper_id'] = "bail|required";
 
@@ -129,6 +133,8 @@ class ExamController extends Controller
         $Exam->exam_time_end = $parameters['exam_time_end'];
         $Exam->apply_time_start = $parameters['apply_time_start'];
         $Exam->apply_time_end = $parameters['apply_time_end'];
+        $Exam->start_time_type = $parameters['start_time_type'];
+        $Exam->duration = $parameters['duration'];
         $Exam->description = $parameters['description'];
         $Exam->paper_id = $parameters['paper_id'];
         return $Exam->save();
