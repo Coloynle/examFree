@@ -34,8 +34,9 @@ class Question extends Model
      * @author CJ
      */
 
-    public function getCreateUserName(){
-        return $this->belongsTo('App\Admin','create_user_id','id');
+    public function getCreateUserName()
+    {
+        return $this->belongsTo('App\Admin', 'create_user_id', 'id');
     }
 
     /**
@@ -45,8 +46,9 @@ class Question extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      * @author CJ
      */
-    public function getUpdateUserName(){
-        return $this->belongsTo('App\Admin','update_user_id','id');
+    public function getUpdateUserName()
+    {
+        return $this->belongsTo('App\Admin', 'update_user_id', 'id');
     }
 
     /**
@@ -57,81 +59,90 @@ class Question extends Model
      * @return \Illuminate\Database\Eloquent\Builder|static
      * @author CJ
      */
-    private function searchByParams($params = []){
+    private function searchByParams($params = [])
+    {
         $select = new Question();
         //试题ID条件
-        if(!empty($params['id'])){
-            $select = $select->where('id','=',$params['id']);
+        if (!empty($params['id'])) {
+            $select = $select->where('id', '=', $params['id']);
         }
         //试题描述条件
-        if(!empty($params['description'])){
-            $select = $select->where('description','like','%'.$params['description'].'%');
+        if (!empty($params['description'])) {
+            $select = $select->where('description', 'like', '%' . $params['description'] . '%');
         }
         //试题类型条件
-        if(!empty($params['type'])){
-            $select = $select->where('type','=',$params['type']);
+        if (!empty($params['type'])) {
+            $select = $select->where('type', '=', $params['type']);
         }
         //试题状态条件
-        if(isset($params['status']) && $params['status'] != ''){
-            $select = $select->where('status','=',(int)$params['status']);
+        if (isset($params['status']) && $params['status'] != '') {
+            $select = $select->where('status', '=', (int)$params['status']);
         }
         //创建人条件
-        if(!empty($params['create_user_name'])){
+        if (!empty($params['create_user_name'])) {
             $admin = new Admin();
-            $admin = $admin->select('id')->where('name','=','Coloynle')->first();
-            $select = $select->where('create_user_id','=',$admin->id);
+            $admin = $admin->select('id')->where('name', '=', $params['create_user_name'])->first();
+            if (!empty($admin))
+                $select = $select->where('create_user_id', '=', $admin->id);
+            else
+                $select = $select->where('create_user_id', '=', -1);
         }
         //修改人条件
-        if(!empty($params['update_user_name'])){
+        if (!empty($params['update_user_name'])) {
             $admin = new Admin();
-            $admin = $admin->select('id')->where('name','=','Coloynle')->first();
-            $select = $select->where('update_user_id','=',$admin->id);
+            $admin = $admin->select('id')->where('name', '=', $params['update_user_name'])->first();
+            if (!empty($admin))
+                $select = $select->where('update_user_id', '=', $admin->id);
+            else if($params['update_user_name'] == '无')
+                $select = $select->where('update_user_id', '=', 0);
+            else
+                $select = $select->where('update_user_id', '=', -1);
         }
         //创建时间起始条件
-        if(!empty($params['created_time_start'])){
-            $select = $select->where('created_at','>=',$params['created_time_start'].' 00:00');
+        if (!empty($params['created_time_start'])) {
+            $select = $select->where('created_at', '>=', $params['created_time_start'] . ' 00:00');
         }
         //创建时间结束条件
-        if(!empty($params['created_time_end'])){
-            $select = $select->where('created_at','<=',$params['created_time_end'].' 23:59');
+        if (!empty($params['created_time_end'])) {
+            $select = $select->where('created_at', '<=', $params['created_time_end'] . ' 23:59');
         }
         //修改时间起始条件
-        if(!empty($params['updated_time_start'])){
-            $select = $select->where('updated_at','>=',$params['updated_time_start'].' 00:00');
+        if (!empty($params['updated_time_start'])) {
+            $select = $select->where('updated_at', '>=', $params['updated_time_start'] . ' 00:00');
         }
         //修改时间结束条件
-        if(!empty($params['updated_time_end'])){
-            $select = $select->where('updated_at','<=',$params['updated_time_end'].' 23:59');
+        if (!empty($params['updated_time_end'])) {
+            $select = $select->where('updated_at', '<=', $params['updated_time_end'] . ' 23:59');
         }
         //试题ID排序
-        if(!empty($params['order_by_id'])){
-            $select = $select->orderBy('id',$params['order_by_id']);
+        if (!empty($params['order_by_id'])) {
+            $select = $select->orderBy('id', $params['order_by_id']);
         }
         //试题类型排序
-        if(!empty($params['order_by_type'])){
-            $select = $select->orderBy('type',$params['order_by_type']);
+        if (!empty($params['order_by_type'])) {
+            $select = $select->orderBy('type', $params['order_by_type']);
         }
         //试题状态排序
-        if(!empty($params['order_by_status'])){
-            $select = $select->orderBy('status',$params['order_by_status']);
+        if (!empty($params['order_by_status'])) {
+            $select = $select->orderBy('status', $params['order_by_status']);
         }
         //试题创建者排序
-        if(!empty($params['order_by_create_user_name'])){
-            $select = $select->orderBy('create_user_id',$params['order_by_create_user_name']);
+        if (!empty($params['order_by_create_user_name'])) {
+            $select = $select->orderBy('create_user_id', $params['order_by_create_user_name']);
         }
         //试题修改者排序
-        if(!empty($params['order_by_update_user_name'])){
-            $select = $select->orderBy('update_user_id',$params['order_by_update_user_name']);
+        if (!empty($params['order_by_update_user_name'])) {
+            $select = $select->orderBy('update_user_id', $params['order_by_update_user_name']);
         }
         //试题创建时间排序
-        if(!empty($params['order_by_created_time'])){
-            $select = $select->orderBy('created_at',$params['order_by_created_time']);
+        if (!empty($params['order_by_created_time'])) {
+            $select = $select->orderBy('created_at', $params['order_by_created_time']);
         }
         //试题修改时间排序
-        if(!empty($params['order_by_updated_time'])){
-            $select = $select->orderBy('updated_at',$params['order_by_updated_time']);
+        if (!empty($params['order_by_updated_time'])) {
+            $select = $select->orderBy('updated_at', $params['order_by_updated_time']);
         }
-        $question = $select->with(['getCreateUserName:id,name','getUpdateUserName:id,name']);
+        $question = $select->with(['getCreateUserName:id,name', 'getUpdateUserName:id,name']);
         return $question;
     }
 
@@ -143,7 +154,8 @@ class Question extends Model
      * @return $this
      * @author CJ
      */
-    public function pageResult($params = []){
+    public function pageResult($params = [])
+    {
 //        dd(self::searchByParams($params));
         return self::searchByParams($params)->paginate(10)->appends($params);
     }
@@ -156,7 +168,8 @@ class Question extends Model
      * @return bool|mixed|null
      * @author CJ
      */
-    public function searchDelete($params = []){
+    public function searchDelete($params = [])
+    {
         return self::searchByParams($params)->delete();
     }
 
@@ -168,7 +181,8 @@ class Question extends Model
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      * @author CJ
      */
-    public function getQuestion($params = []){
+    public function getQuestion($params = [])
+    {
         return self::searchByParams($params)->get()->toArray();
     }
 
@@ -180,8 +194,9 @@ class Question extends Model
      * @return mixed
      * @author CJ
      */
-    public function getQuestionForId($questionsId){
-        return self::whereIn('id',$questionsId)->where('status','=',0)->get()->toArray();
+    public function getQuestionForId($questionsId)
+    {
+        return self::whereIn('id', $questionsId)->where('status', '=', 0)->get()->toArray();
     }
 
     /**
@@ -193,8 +208,9 @@ class Question extends Model
      * @return mixed
      * @author CJ
      */
-    public function updateStatusQuestionForId($questionsId,$status){
-        return self::whereIn('id',$questionsId)->update(['status' => $status]);
+    public function updateStatusQuestionForId($questionsId, $status)
+    {
+        return self::whereIn('id', $questionsId)->update(['status' => $status]);
     }
 
 
@@ -207,7 +223,8 @@ class Question extends Model
      * @return bool|int
      * @author CJ
      */
-    public function updateStatusQuestionForParams($params = [],$status){
+    public function updateStatusQuestionForParams($params = [], $status)
+    {
         return self::searchByParams($params)->update(['status' => $status]);
     }
 }

@@ -42,21 +42,21 @@
                     <a class="btn btn-default radius" href="javascript:;" data-value="1" onclick="chooseButton(this,$('input[name=type]'));$('#apply_min').show();$('#apply_max').show();">需要报名</a>
                 </div>
                 <span class="c-error">{{ $errors->first('type') }}</span>
-                <input type="text" name="exam_time_start" value="{{ old('exam_time_start') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="考试起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'exam_max\')}' })" id="exam_min">
+                <input type="text" name="exam_time_start" value="{{ old('exam_time_start') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="考试起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'exam_max\')}',dateFmt:'yyyy-MM-dd HH:mm:ss' })" id="exam_min">
                 <span class="c-error f-l mt-15 mr-10">{{ $errors->first('exam_time_start') }}</span>
-                <input type="text" name="exam_time_end" value="{{ old('exam_time_end') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="考试结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'exam_min\')}' })" id="exam_max">
+                <input type="text" name="exam_time_end" value="{{ old('exam_time_end') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="考试结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'exam_min\')}',dateFmt:'yyyy-MM-dd HH:mm:ss' })" id="exam_max">
                 <span class="c-error f-l mt-15 mr-10">{{ $errors->first('exam_time_end') }}</span>
                 <input type="text"
                        @if(old('type') == 0 || old('type') == '')
                        hidden
                        @endif
-                       name="apply_time_start" value="{{ old('apply_time_start') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="报名起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'apply_max\')}' })" id="apply_min">
+                       name="apply_time_start" value="{{ old('apply_time_start') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="报名起始日期" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'apply_max\')}',dateFmt:'yyyy-MM-dd HH:mm:ss' })" id="apply_min">
                 <span class="c-error f-l mt-15 mr-10">{{ $errors->first('apply_time_start') }}</span>
                 <input type="text"
                        @if(old('type') == 0 || old('type') == '')
                        hidden
                        @endif
-                       name="apply_time_end" value="{{ old('apply_time_end') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="报名结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'apply_min\')}' })" id="apply_max">
+                       name="apply_time_end" value="{{ old('apply_time_end') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="报名结束日期" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'apply_min\')}',dateFmt:'yyyy-MM-dd HH:mm:ss' })" id="apply_max">
                 <span class="c-error f-l mt-15 mr-10">{{ $errors->first('apply_time_end') }}</span>
                 <input type="text" name="sort" value="{{ old('sort') }}" class="input-text radius f-l mr-10 mt-10" style="width: 186px" placeholder="考试分类">
                 <span class="c-error f-l mt-15 mr-10">{{ $errors->first('sort') }}</span>
@@ -65,7 +65,8 @@
                     <a class="btn btn-default radius" href="javascript:;" data-value="0" onclick="chooseButton(this,$('input[name=start_time_type]'));">试卷打开时间</a>
                     <a class="btn btn-default radius" href="javascript:;" data-value="1" onclick="chooseButton(this,$('input[name=start_time_type]'));">考试开始时间</a>
                 </div>
-                <input name="duration" type="number" min="0" class="input-text radius f-l mr-10 mt-10" style="width: 130px;" placeholder="考试时长 / 分钟">
+                <input name="duration" type="number" value="{{ old('duration') }}" min="0" class="input-text radius f-l mr-10 mt-10" style="width: 130px;" placeholder="考试时长 / 分钟">
+                <span class="c-error f-l mt-15 mr-10">{{ $errors->first('duration') }}</span>
             </div>
             <div class="panel panel-secondary-change radius mt-20">
                 <div class="panel-header">

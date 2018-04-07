@@ -67,23 +67,31 @@ class Paper extends Model
         }
         //试卷分类条件
         if(!empty($params['type'])){
-            $select = $select->where('type','=',$params['type']);
+            $select = $select->where('type','like','%'.$params['type'].'%');
         }
         //试卷状态条件
         if(isset($params['status']) && $params['status'] != ''){
             $select = $select->where('status','=',(int)$params['status']);
         }
         //创建人条件
-        if(!empty($params['create_user_name'])){
+        if (!empty($params['create_user_name'])) {
             $admin = new Admin();
-            $admin = $admin->select('id')->where('name','=','Coloynle')->first();
-            $select = $select->where('create_user_id','=',$admin->id);
+            $admin = $admin->select('id')->where('name', '=', $params['create_user_name'])->first();
+            if (!empty($admin))
+                $select = $select->where('create_user_id', '=', $admin->id);
+            else
+                $select = $select->where('create_user_id', '=', -1);
         }
         //修改人条件
-        if(!empty($params['update_user_name'])){
+        if (!empty($params['update_user_name'])) {
             $admin = new Admin();
-            $admin = $admin->select('id')->where('name','=','Coloynle')->first();
-            $select = $select->where('update_user_id','=',$admin->id);
+            $admin = $admin->select('id')->where('name', '=', $params['update_user_name'])->first();
+            if (!empty($admin))
+                $select = $select->where('update_user_id', '=', $admin->id);
+            else if($params['update_user_name'] == '无')
+                $select = $select->where('update_user_id', '=', 0);
+            else
+                $select = $select->where('update_user_id', '=', -1);
         }
         //创建时间起始条件
         if(!empty($params['created_time_start'])){
