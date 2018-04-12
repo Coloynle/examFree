@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exam;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $exams = new Exam();
+        $newestExam = $exams->getNewestExam();
+//        dd($newestExam);
+        return view('home',['newestExam' => $newestExam]);
     }
 }

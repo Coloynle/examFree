@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 
 class ExamController extends Controller
 {
@@ -36,7 +37,6 @@ class ExamController extends Controller
     }
 
     public function createExam(Request $request){
-
         //将要保存的数据
         $parameter = $request->all();
         //作为验证的数据
@@ -80,6 +80,12 @@ class ExamController extends Controller
 
         $validator = \Validator::make($parameters,$vaildatedData,$vailErrorInfo,$vaildateName)->validate();
 
+        if ($request->hasFile('examImg') && $request->file('examImg')->isValid()) {
+            $examImgPath = $request->file('examImg')->store('public/examImg');
+            $examImgPath = substr($examImgPath,7);
+            $parameter['examImg'] = $examImgPath;
+        }
+
         $save = self::saveExam($parameter);
         if($save){
             if(empty($parameters['examId'])){
@@ -103,7 +109,7 @@ class ExamController extends Controller
     }
 
     /**
-     * 保存试题到数据库 (或更新)
+     * 保存考试到数据库 (或更新)
      *
      * @function saveQuestion
      * @param $parameters
@@ -126,8 +132,11 @@ class ExamController extends Controller
             $Exam->update_user_id = 0;
         }
 
-        //插入试题到数据库
+        //插入考试到数据库
         $Exam->name = $parameters['examName'];
+        if(!empty($parameters['examImg'])){
+            $Exam->img = $parameters['examImg'];
+        }
         $Exam->type = $parameters['type'];
         $Exam->sort = $parameters['sort'];
         $Exam->exam_time_start = $parameters['exam_time_start'];
@@ -225,6 +234,7 @@ class ExamController extends Controller
         $_old_input = $exam[0];
         $_old_input['examId'] = $_old_input['id'];
         $_old_input['examName'] = $_old_input['name'];
+        $_old_input['examImg'] = $_old_input['img'];
 
         return redirect('/admin/exam/addExam/'.$id)->with('_old_input', $_old_input);
     }

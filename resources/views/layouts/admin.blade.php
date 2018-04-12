@@ -65,7 +65,7 @@
                             <li><a href="#">个人信息</a></li>
                             <li><a href="#">切换账户</a></li>
                             <li>
-                                <a href="javascript:;" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout</a>
+                                <a href="javascript:;" onclick="event.preventDefault();document.getElementById('logout-form').submit();">退出登录</a>
                                 <form id="logout-form" action="{{ url('/admin/logout') }}" method="POST" style="display: none;">
                                     {{ csrf_field() }}
                                 </form>

@@ -186,12 +186,12 @@ class Exam extends Model
      *
      * @function pageResult
      * @param array $params
+     * @param int $perPage
      * @return $this
      * @author CJ
      */
-    public function pageResult($params = []){
-//        dd(self::searchByParams($params));
-        return self::searchByParams($params)->paginate(10)->appends($params);
+    public function pageResult($params = [],$perPage = 10){
+        return self::searchByParams($params)->paginate($perPage)->appends($params);
     }
 
     /**
@@ -243,6 +243,17 @@ class Exam extends Model
      */
     public function searchDelete($params = []){
         return self::searchByParams($params)->delete();
+    }
+
+    /**
+     * 获得最新考试（6个）
+     *
+     * @function getNewestExam
+     * @return array
+     * @author CJ
+     */
+    public function getNewestExam(){
+        return self::searchByParams(['status' => '0', 'order_by_updated_time' => 'desc'])->limit(6)->get()->toArray();
     }
 
 }

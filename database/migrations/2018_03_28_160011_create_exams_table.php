@@ -16,6 +16,7 @@ class CreateExamsTable extends Migration
         Schema::create('exams', function (Blueprint $table) {
             $table->increments('id')->comment('自增长主键');
             $table->string('name')->comment('考试名称');
+            $table->string('img')->nullable()->comment('考试图片');
             $table->integer('type')->comment('考试类型');
             $table->string('sort')->comment('考试分类');
             $table->timestamp('exam_time_start')->nullable()->comment('考试开始时间');

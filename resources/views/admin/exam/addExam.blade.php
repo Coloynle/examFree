@@ -26,14 +26,38 @@
         var getPaperId = '{{ url('admin/paper/getPaperById') }}';
         var addPaperId = '{{ url('admin/paper/managePaper/true') }}';
         var tbodyDom = '';
+
+        function getPath(obj)
+        {
+            if(obj)
+            {
+                if (window.navigator.userAgent.indexOf("MSIE")>=1)
+                {
+                    obj.select();
+                    return document.selection.createRange().text;
+                }
+                else if(window.navigator.userAgent.indexOf("Firefox")>=1)
+                {
+                    if(obj.files)
+                    {
+                        return obj.files.item(0).getAsDataURL();
+                    }
+                    return obj.value;
+                }
+                return obj.value;
+            }
+        }
     </script>
     <script type="text/javascript" src="{{ asset('js/admin/exam/addExam.js') }}"></script>
 
     <div class="page-container">
-        <form method="POST" action="{{ url('admin/exam/createExam') }}">
+        <form method="POST" action="{{ url('admin/exam/createExam') }}" enctype="multipart/form-data">
             {{ csrf_field() }}
             <input name="examId" type="hidden" class="input-text radius"  value="{{ old('examId') }}">
-            <input name="examName" type="text" class="input-text radius" placeholder="考试名称" value="{{ old('examName') }}">
+            <input name="examName" type="text" class="input-text radius" style="width: 82.333333%" placeholder="考试名称" value="{{ old('examName') }}">
+            <input type="button" class="btn btn-primary radius" id="fileButton" value="选择封面图片" onclick="$('#imgFile').click()">
+            <span id="imgTF">{{ null == old('examImg') ? '未选择图片' : '已选择图片' }}</span>
+            <input type="file" name="examImg" id="imgFile" style="display: none;" onchange="$('#imgTF').html('已选择图片')">
             <span class="c-error">{{ $errors->first('examName') }}</span>
             <input type="hidden" name="type" value="{{ old('type') == '' ? 0 : old('type')}}">
             <div class="cl">

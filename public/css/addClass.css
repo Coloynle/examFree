@@ -135,3 +135,9 @@
     border-bottom-right-radius:3px;
     border-top-right-radius:3px
 }
+
+.width-height-6-4{
+    height: 0;
+    width: 100%;
+    padding-bottom: 66.8%
+}

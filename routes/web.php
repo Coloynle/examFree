@@ -28,6 +28,14 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 /**
+ *  前台Exam
+ */
+Route::group(['prefix' => 'exam'], function () {
+    Route::get('/', 'ExamController@index')->name('exam');
+    Route::get('showExam/{id?}', 'ExamController@showExam');
+});
+
+/**
  *  后台登录
  */
 Route::group(['prefix' => 'admin'], function () {
