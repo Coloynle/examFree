@@ -19,10 +19,12 @@
                 <p>考试时长：{{ $exam['duration'] }}</p>
                 <p>创建人：<span title="{{ $exam['get_create_user_name']['name'] }}">{{ $exam['get_create_user_name']['name'] }}</span></p>
                 <p>创建时间：<span>{{ $exam['created_at'] }}</span></p>
-                <a class="uk-button uk-button-success uk-button-large uk-text-bottom uk-width-1-4 uk-position-absolute" style="bottom: 0">开始考试</a>
+                <a class="uk-button uk-button-success uk-button-large uk-text-bottom uk-width-1-4 uk-position-absolute" style="bottom: 0" onclick="startExam('{{ $exam['id'] }}')" href="javascript:;">
+                    开始考试
+                </a>
             </div>
         </div>
-        <div class="uk-width-1-1 uk-margin-top">
+        <div class="uk-width-1-1 uk-margin-top uk-margin-bottom">
             <div class="uk-panel uk-panel-box">
                 <h4 class="uk-panel-title">
                     考试描述
@@ -33,4 +35,28 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            //AJAX TOKEN初始化
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+        });
+        var checkPermissionUrl = '{{ url('exam/checkPermission') }}';
+        function startExam(id) {
+            $.ajax({
+                'type' : 'POST',
+                'url' : checkPermissionUrl,
+                'data' : {
+                    'id' : id
+                },
+                'success' : function (data) {
+                    $(window).attr('location',data);
+                }
+            })
+        }
+    </script>
 @endsection

@@ -131,8 +131,6 @@
             increaseArea: '20%'
         });
 
-        console.log($('#description'));
-
         $('.description input').each(function () {
             $(this).attr('type','text');
             // $(this).val($('#option_answer_info_'+$(this).data('content')).val());

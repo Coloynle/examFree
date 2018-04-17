@@ -115,7 +115,6 @@ function paperAdd(papersId) {
 
 //对比数组1和数组2, 将数组1中和数组2重复的部分去除并返回剩下的数组
 function compareArray(arr1, arr2) {
-    console.log(arr1, arr2);
     var temp = [];
     var tempArray = [];
     for (var i = 0; i < arr2.length; i++) {
@@ -125,7 +124,6 @@ function compareArray(arr1, arr2) {
         if (!temp[arr1[j]])
             tempArray.push(arr1[j]);
     }
-    console.log(tempArray, temp);
     return tempArray;
 }
 

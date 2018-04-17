@@ -33,6 +33,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['prefix' => 'exam'], function () {
     Route::get('/', 'ExamController@index')->name('exam');
     Route::get('showExam/{id?}', 'ExamController@showExam');
+    Route::post('checkPermission', 'ExamController@checkPermission');
+    Route::get('startExam/{encrypt?}', 'ExamController@startExam');
+    Route::post('saveExam', 'ExamController@saveExam');
 });
 
 /**

@@ -17499,9 +17499,11 @@ UE.plugins['autofloat'] = function() {
                 toolbarBox.style.left =  domUtils.getXY(toolbarBox).x - document.documentElement.getBoundingClientRect().left+2  + 'px';
             }
             if(toolbarBox.style.position != 'fixed'){
-                toolbarBox.style.position = 'fixed';
-                toolbarBox.style.top = topOffset +"px";
-                ((origalFloat == 'absolute' || origalFloat == 'relative') && parseFloat(origalLeft)) && (toolbarBox.style.left = toobarBoxPos.x + 'px');
+                //不需要浮动在顶部
+                //CJ
+                // toolbarBox.style.position = 'fixed';
+                // toolbarBox.style.top = topOffset+ 200 +"px";
+                // ((origalFloat == 'absolute' || origalFloat == 'relative') && parseFloat(origalLeft)) && (toolbarBox.style.left = toobarBoxPos.x + 'px');
             }
         }
     }

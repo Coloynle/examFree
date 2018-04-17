@@ -11,14 +11,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'ExamFree') }}</title>
+    <script type="text/javascript" src="{{ asset('h-ui/lib/jquery/1.9.1/jquery.min.js') }}"></script>
+
     {{--<link href="{{ asset('uikit/css/uikit.css') }}" rel="stylesheet" type="text/css" />--}}
     {{--<link href="{{ asset('uikit/css/uikit.almost-flat.css') }}" rel="stylesheet" type="text/css" />--}}
     <link href="{{ asset('uikit/css/uikit.gradient.css') }}" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="{{ asset('h-ui/lib/jquery/1.9.1/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('uikit/js/uikit.js')}}"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/addClass.css') }}" rel="stylesheet" type="text/css" />
 </head>
+<script>
+
+</script>
 <body>
     <div id="app">
         <nav class="navbar navbar-default navbar-static-top">
