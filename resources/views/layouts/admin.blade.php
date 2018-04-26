@@ -128,7 +128,7 @@
             <dt><i class="Hui-iconfont">&#xe622;</i> 成绩管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="http://h-ui.duoshuo.com/admin/" data-title="考试评分" href="javascript:;">考试评分</a></li>
+                    <li><a data-href="{{ url('admin/achievement/manualEvaluationExam') }}" data-title="考试评分" href="javascript:;">考试评分</a></li>
                     <li><a data-href="feedback-list.html" data-title="成绩详情" href="javascript:void(0)">成绩详情</a></li>
                 </ul>
             </dd>

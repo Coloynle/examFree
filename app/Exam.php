@@ -206,6 +206,10 @@ class Exam extends Model
         return self::searchByParams($params)->get()->toArray();
     }
 
+    public function getExamId($params = []){
+        return self::searchByParams($params)->get(['id'])->toArray();
+    }
+
     /**
      * 通过考试ID更新考试状态
      *

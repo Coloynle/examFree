@@ -95,34 +95,39 @@
                           "</div>";
             $(divHtml).appendTo($(divObj));
             var ue = UE.getEditor('description');
-            var option = '<input type="button" data-content="'+ word +'" value="填空'+ word +'" id="option_'+ word +'">'
-            ue.focus();
+            var option = '<input type="button" class="'+ word +'" value="填空'+ word +'" id="option_'+ word +'">'
+            // ue.focus();
             ue.execCommand('inserthtml',option);
 
             //遍历编辑器内按钮 判断是否是在中间插入的填空 ( 保证填空题是序号是按顺序排列，确保删除不出现问题 )
             var ueObj = $(ue.getContent());
             var tempCode = 65;
             var changeCode = false;
+            // console.log(changeCode);
+            // console.log(ueObj);
             ueObj.find('input[type=button]').each(function () {
                 if(changeCode){
                     $(this).attr('id','option_'+String.fromCharCode(tempCode));
                     $(this).val('填空'+String.fromCharCode(tempCode));
-                    $(this).data('content',String.fromCharCode(tempCode));
+                    $(this).attr('class',String.fromCharCode(tempCode));
                 }
-                else if($(this).data('content') != String.fromCharCode(tempCode)){
+                else if($(this).attr('class') != String.fromCharCode(tempCode)){
                     changeCode = tempCode;
                     $(this).attr('id','option_'+String.fromCharCode(tempCode));
                     $(this).val('填空'+String.fromCharCode(tempCode));
-                    $(this).data('content',String.fromCharCode(tempCode));
+                    $(this).attr('class',String.fromCharCode(tempCode));
                 }
                 tempCode++;
             });
+            console.log(changeCode);
             if(changeCode) {
                 ue.setContent('');
                 var temp = '';
                 ueObj.each(function () {
+                    console.log(this.outerHTML);
                     temp += this.outerHTML;
                 });
+                console.log(temp);
                 ue.setContent(temp);
             }
             //遍历下方填空处顺序
@@ -240,17 +245,17 @@
                 if(changeCode){
                     $(this).attr('id','option_'+String.fromCharCode(tempCode));
                     $(this).val('填空'+String.fromCharCode(tempCode));
-                    $(this).data('content',String.fromCharCode(tempCode));
+                    $(this).attr('class',String.fromCharCode(tempCode));
                 }
-                else if($(this).data('content') != String.fromCharCode(tempCode)){
+                else if($(this).attr('class') != String.fromCharCode(tempCode)){
                     changeCode = tempCode;
                     $(this).attr('id','option_'+String.fromCharCode(tempCode));
                     $(this).val('填空'+String.fromCharCode(tempCode));
-                    $(this).data('content',String.fromCharCode(tempCode));
+                    $(this).attr('class',String.fromCharCode(tempCode));
                 }
                 tempCode++;
             });
-            if(changeCode) {
+            if(changeCode || (startCode == endCode)) {
                 ue.setContent('');
                 var temp = '';
                 ueObj.each(function () {
@@ -483,7 +488,7 @@
                             ueObj.find('input[type=button]').each(function () {
                                 $(this).attr('id','option_'+word);
                                 $(this).val('填空'+word);
-                                $(this).data('content',word);
+                                $(this).attr('class',word);
                                 word = String.fromCharCode(word.charCodeAt(0)+1);
                             });
 

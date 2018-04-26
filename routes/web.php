@@ -94,3 +94,18 @@ Route::group(['prefix' => 'admin/exam'], function () {
     Route::post('statusExam/{id?}', 'Admin\ExamController@statusExam'); //上下架考试
     Route::get('restoreExam/', 'Admin\ExamController@restoreExam'); //恢复软删除的考试
 });
+
+/**
+ * 成绩管理
+ */
+Route::group(['prefix' => 'admin/achievement'], function () {
+    Route::get('manualEvaluationExam', 'Admin\AchievementController@manualEvaluationExam');  //所有手动批卷考试展示
+    Route::post('manualEvaluationExam', 'Admin\AchievementController@manualEvaluationExam');  //所有手动批卷考试展示
+//    Route::post('createExam/', 'Admin\ExamController@createExam');   //创建考试方法
+//    Route::get('manageExam/{breadcrumbTop?}', 'Admin\ExamController@manageExam');   //管理考试
+//    Route::post('manageExam/', 'Admin\ExamController@manageExam');   //管理考试
+//    Route::get('changeExam/{id}', 'Admin\ExamController@changeExam');   //修改考试
+//    Route::post('deleteExam/{id?}', 'Admin\ExamController@deleteExam'); //删除考试
+//    Route::post('statusExam/{id?}', 'Admin\ExamController@statusExam'); //上下架考试
+//    Route::get('restoreExam/', 'Admin\ExamController@restoreExam'); //恢复软删除的考试
+});

@@ -19,6 +19,8 @@ class CreateUserAnswersTable extends Migration
             $table->integer('paper_id')->comment('试卷ID');
             $table->integer('user_id')->comment('用户ID');
             $table->json('result')->comment('用户所提交答案');
+            $table->boolean('manual_evaluation')->comment('是否需要人工评卷');
+            $table->integer('manual_evaluation_user_id')->comment('批卷人ID');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

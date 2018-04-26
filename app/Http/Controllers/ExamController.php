@@ -214,6 +214,11 @@ class ExamController extends Controller
         $answer->user_id = Auth::user()->id;
         unset($studentExamInfo['exam_id']);
         unset($studentExamInfo['paper_id']);
+        if($flag){
+            $answer->manual_evaluation = true;
+        }else{
+            $answer->manual_evaluation = false;
+        }
         $answer->result = json_encode($studentExamInfo);
         $answer->save();
 
