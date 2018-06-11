@@ -1,48 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin\Auth;
 
-use App\Http\Controllers\Controller;
-use App\User;
-use Illuminate\Foundation\Auth\ResetsPasswords;
+use App\Admin;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Password Reset Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling password reset requests
-    | and uses a simple trait to include this behavior. You're free to
-    | explore this trait and override any methods you wish to tweak.
-    |
-    */
-
-    use ResetsPasswords;
-
-    /**
-     * Where to redirect users after resetting their password.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-//        $this->middleware('guest');
-    }
-
     public function resetPassword()
     {
-        return view('auth/passwords/reset');
+        return view('admin/auth/reset');
     }
 
     public function changePassword(Request $request){
@@ -81,9 +51,9 @@ class ResetPasswordController extends Controller
                     'message' => '修改用户成功'
                 ];
             }
-            return redirect('home')->with($message);
+            return redirect('admin/index')->with($message);
         }else{
-            return redirect('home')->with([
+            return redirect('admin/index')->with([
                 'code' => '0',
                 'message' => '用户保存失败'
             ]);
@@ -100,7 +70,7 @@ class ResetPasswordController extends Controller
      */
     public function saveUser($parameters)
     {
-        $user = User::find($parameters['userId']);
+        $user = Admin::find($parameters['userId']);
         $user->password = Hash::make($parameters['password']);
         return $user->save();
     }

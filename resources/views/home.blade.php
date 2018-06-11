@@ -42,7 +42,27 @@
                         </div>
                     </li>
                     <li>
-                        22我的天
+                        <div class="uk-grid uk-flex">
+                            @foreach($hottestExam as $item => $exam)
+                                <div class="uk-width-1-3 uk-margin-bottom">
+                                    <figure class="uk-overlay uk-overlay-hover width-height-6-4">
+                                        <img src="{{ $exam['getExam']['img'] == '' ? asset('uikit/placeholder-img.svg') : asset('storage/'.$exam['getExam']['img']) }}" onerror="this.src='{{ asset('uikit/placeholder-img.svg') }}'">
+                                        <figcaption class="uk-overlay-panel uk-overlay-background uk-overlay-slide-left">
+                                            <p class="uk-text-center">考试开始时间：{{ $exam['getExam']['exam_time_start'] }}</p>
+                                            <p class="uk-text-center">考试结束时间：{{ $exam['getExam']['exam_time_end'] }}</p>
+                                            @if($exam['getExam']['type'] == 1)
+                                                <p class="uk-text-center">报名开始时间：{{ $exam['getExam']['apply_time_start'] }}</p>
+                                                <p class="uk-text-center">报名结束时间：{{ $exam['getExam']['apply_time_end'] }}</p>
+                                            @endif
+                                            <a class="uk-position-cover" href="{{ url('exam/showExam/'.$exam['getExam']['id']) }}"></a>
+                                        </figcaption>
+                                    </figure>
+                                    <p class="uk-text-center uk-text-truncate" title="{{ $exam['getExam']['name'] }}">
+                                        {{ $exam['getExam']['name'] }}
+                                    </p>
+                                </div>
+                            @endforeach
+                        </div>
                     </li>
                 </ul>
             </div>

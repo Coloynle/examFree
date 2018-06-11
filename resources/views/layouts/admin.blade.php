@@ -62,8 +62,7 @@
                             <a href="#" class="dropDown_A"> {{ \Illuminate\Support\Facades\Auth::guard('admin')->user()->name }} <i class="Hui-iconfont">&#xe6d5;</i>
                             </a>
                         <ul class="dropDown-menu menu radius box-shadow">
-                            <li><a href="#">个人信息</a></li>
-                            <li><a href="#">切换账户</a></li>
+                            <li><a href="{{ url('admin/password/resetPassword') }}">个人信息</a></li>
                             <li>
                                 <a href="javascript:;" onclick="event.preventDefault();document.getElementById('logout-form').submit();">退出登录</a>
                                 <form id="logout-form" action="{{ url('/admin/logout') }}" method="POST" style="display: none;">

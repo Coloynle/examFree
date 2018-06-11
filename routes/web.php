@@ -39,6 +39,22 @@ Route::group(['prefix' => 'exam'], function () {
 });
 
 /**
+ *  前台Achievement
+ */
+Route::group(['prefix' => 'achievement'], function () {
+    Route::get('/', 'AchievementController@index');
+});
+
+/**
+ *  前台Achievement
+ */
+Route::group(['prefix' => 'password'], function () {
+    Route::get('resetPassword/', 'Auth\ResetPasswordController@resetPassword');
+    Route::post('changePassword/', 'Auth\ResetPasswordController@changePassword');
+});
+
+
+/**
  *  后台登录
  */
 Route::group(['prefix' => 'admin'], function () {
@@ -125,4 +141,12 @@ Route::group(['prefix' => 'admin/user'], function () {
     Route::get('changeUser/{id}', 'Admin\UserController@changeUser');   //修改用户
     Route::post('deleteUser/{id?}', 'Admin\UserController@deleteUser'); //删除用户
     Route::get('restoreUser/', 'Admin\UserController@restoreUser'); //恢复软删除的考试
+});
+
+/**
+ *  前台Achievement
+ */
+Route::group(['prefix' => 'admin/password'], function () {
+    Route::get('resetPassword/', 'Admin\Auth\ResetPasswordController@resetPassword');
+    Route::post('changePassword/', 'Admin\Auth\ResetPasswordController@changePassword');
 });

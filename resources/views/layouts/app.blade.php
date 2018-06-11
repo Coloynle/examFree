@@ -57,15 +57,10 @@
                             </a>
                         </li>
                         <li>
-                            <a>
+                            <a href="{{ url('/achievement') }}">
                                 成绩
                             </a>
                         </li>
-                        {{--<li>
-                            <a>
-                                消息
-                            </a>
-                        </li>--}}
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -82,8 +77,8 @@
 
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="{{ url('') }}">
-                                            个人中心
+                                        <a href="{{ url('password/resetPassword') }}">
+                                            修改密码
                                         </a>
                                     </li>
                                     <li>

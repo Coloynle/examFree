@@ -76,7 +76,7 @@ class UserAnswer extends Model
      * @author CJ
      */
     public function getPaper(){
-        return $this->belongsTo('App\Exam','paper_id','id');
+        return $this->belongsTo('App\Paper','paper_id','id');
     }
 
     /**
@@ -114,6 +114,10 @@ class UserAnswer extends Model
         $select = $select->whereIn('exam_id',$exam_id);
 
 
+        //交卷用户条件
+        if(!empty($params['user_id'])){
+            $select = $select->where('user_id','=',$params['user_id']);
+        }
         //创建时间起始条件
         if(!empty($params['created_time_start'])){
             $select = $select->where('created_at','>=',$params['created_time_start'].' 00:00');
@@ -128,7 +132,7 @@ class UserAnswer extends Model
         }
         $select = $select->where('manual_evaluation','=',$status);
         $select = $select->orderBy('created_at','desc');
-        $examPreview = $select->with(['getExam','getExamUser:id,name','getScore:id,score']);
+        $examPreview = $select->with(['getExam','getExamUser:id,name','getScore:id,score','getPaper']);
 
         return $examPreview;
     }

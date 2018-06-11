@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exam;
+use App\UserAnswer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class HomeController extends Controller
+class AchievementController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -24,10 +25,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $exams = new Exam();
-        $newestExam = $exams->getNewestExam();
-        $hottestExam = $exams->getHottestExam();
-//        dd($hottestExam);
-        return view('home',['newestExam' => $newestExam,'hottestExam' => $hottestExam]);
+        $userAnswer = new UserAnswer();
+        $achievement = $userAnswer->getDetailsPaginate(['user_id' => Auth::user()->id]);
+//        dd($achievement);
+        return view('achievement/index',['achievements' => $achievement]);
     }
 }

@@ -10,9 +10,6 @@
                     <li class="uk-active">
                         <a class="uk-text-center">全部考试</a>
                     </li>
-                    <li>
-                        <a class="uk-text-center">最热考试</a>
-                    </li>
                 </ul>
             </div>
             <div class="uk-margin-top">
@@ -55,9 +52,6 @@
                                 {!! $exams->links() !!}
                             </div>
                         </div>
-                    </li>
-                    <li>
-                        22我的天
                     </li>
                 </ul>
             </div>

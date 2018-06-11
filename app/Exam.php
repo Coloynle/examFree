@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Exam extends Model
 {
@@ -259,6 +260,18 @@ class Exam extends Model
      */
     public function getNewestExam(){
         return self::searchByParams(['status' => '0', 'order_by_updated_time' => 'desc'])->limit(6)->get()->toArray();
+    }
+
+    /**
+     * 获得最新考试（6个）
+     *
+     * @function getHottestExam
+     * @return array
+     * @author CJ
+     */
+    public function getHottestExam(){
+        $userAnswer = UserAnswer::select('exam_id',DB::raw('count(*) as total'))->groupBy('exam_id')->orderBy('total','desc')->with(['getExam'])->limit(6)->get();
+        return $userAnswer;
     }
 
 }

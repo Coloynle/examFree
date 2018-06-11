@@ -1,6 +1,16 @@
 @extends('layouts.app')
-
 @section('content')
+    <script>
+        @if(Session::has('message'))
+        $(function () {
+            $.Huimodalalert('{{ Session::get('message') }}', 2000);
+                    @if(Session::get('code') == 2)
+            var index = parent.layer.getFrameIndex(window.name);
+            setTimeout(function(){parent.layer.close(index)}, 2000);
+            @endif
+        });
+        @endif
+    </script>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -8,25 +18,9 @@
                 <div class="panel-heading">Reset Password</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('password.request') }}">
+                    <form class="form-horizontal" method="POST" action="{{ url('password/changePassword') }}">
                         {{ csrf_field() }}
-
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ $email or old('email') }}" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
+                        <input type="hidden" name="userId" value="{{ Auth::user()->id }}">
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                             <label for="password" class="col-md-4 control-label">Password</label>
 
