@@ -61,11 +61,11 @@
                                 成绩
                             </a>
                         </li>
-                        <li>
+                        {{--<li>
                             <a>
                                 消息
                             </a>
-                        </li>
+                        </li>--}}
                     </ul>
 
                     <!-- Right Side Of Navbar -->

@@ -25,6 +25,14 @@ return [
         'exam' => '考试管理',
         'addExam' => '添加考试',
         'manageExam' => '管理考试',
+
+        'achievement' => '成绩管理',
+        'manualEvaluationExam' => '考试评分',
+        'achievementDetails' => '成绩详情',
+
+        'user' => '用户管理',
+        'addUser' => '添加用户',
+        'manageUser' => '管理用户',
     ],
 
     /*

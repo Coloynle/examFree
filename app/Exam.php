@@ -243,6 +243,7 @@ class Exam extends Model
      * @function searchDelete
      * @param array $params
      * @return bool|mixed|null
+     * @throws \Exception
      * @author CJ
      */
     public function searchDelete($params = []){

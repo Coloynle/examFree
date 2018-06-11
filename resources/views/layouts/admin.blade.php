@@ -44,10 +44,10 @@
                 <ul class="cl">
                     <li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe600;</i> 新增 <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
-                            <li><a href="javascript:;" onclick="article_add('添加资讯','article-add.html')"><i class="Hui-iconfont">&#xe616;</i> 资讯</a></li>
-                            <li><a href="javascript:;" onclick="picture_add('添加资讯','picture-add.html')"><i class="Hui-iconfont">&#xe613;</i> 图片</a></li>
-                            <li><a href="javascript:;" onclick="product_add('添加资讯','product-add.html')"><i class="Hui-iconfont">&#xe620;</i> 产品</a></li>
-                            <li><a href="javascript:;" onclick="member_add('添加用户','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i> 用户</a></li>
+                            <li><a data-href="{{ url('admin/question/addQuestion/SingleChoice/') }}" data-title="添加试题" href="javascript:void(0)"><i class="Hui-iconfont">&#xe616;</i> 试题</a></li>
+                            <li><a data-href="{{ url('admin/paper/addPaper/') }}" data-title="添加试题" href="javascript:void(0)"><i class="Hui-iconfont">&#xe613;</i> 试卷</a></li>
+                            <li><a data-href="{{ url('admin/exam/addExam/') }}" data-title="添加试题" href="javascript:void(0)"><i class="Hui-iconfont">&#xe620;</i> 考试</a></li>
+                            <li><a data-href="{{ url('admin/question/addQuestion/SingleChoice/') }}" data-title="添加试题" href="javascript:void(0)"><i class="Hui-iconfont">&#xe60d;</i> 用户</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -73,7 +73,7 @@
                         </ul>
                         </li>
                         @endguest
-                    <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+                    {{--<li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
                     <li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
@@ -83,7 +83,7 @@
                             <li><a href="javascript:;" data-val="yellow" title="黄色">黄色</a></li>
                             <li><a href="javascript:;" data-val="orange" title="橙色">橙色</a></li>
                         </ul>
-                    </li>
+                    </li>--}}
                 </ul>
             </nav>
         </div>
@@ -101,7 +101,7 @@
                     <ul>
                         <li><a data-href="{{ url('admin/question/addQuestion/SingleChoice/') }}" data-title="添加试题" href="javascript:void(0)">添加试题</a></li>
                         <li><a data-href="{{ url('admin/question/manageQuestion/') }}" data-title="管理试题" href="javascript:void(0)">管理试题</a></li>
-                        <li><a data-href="{{ url('admin/question/changeQuestion/1') }}" data-title="导入试题" href="javascript:void(0)">导入试题</a></li>
+                        {{--<li><a data-href="{{ url('admin/question/changeQuestion/1') }}" data-title="导入试题" href="javascript:void(0)">导入试题</a></li>--}}
                     </ul>
                 </dd>
             </dl>
@@ -129,7 +129,7 @@
             <dd>
                 <ul>
                     <li><a data-href="{{ url('admin/achievement/manualEvaluationExam') }}" data-title="考试评分" href="javascript:;">考试评分</a></li>
-                    <li><a data-href="feedback-list.html" data-title="成绩详情" href="javascript:void(0)">成绩详情</a></li>
+                    <li><a data-href="{{ url('admin/achievement/achievementDetails') }}" data-title="成绩详情" href="javascript:void(0)">成绩详情</a></li>
                 </ul>
             </dd>
         </dl>
@@ -137,17 +137,12 @@
             <dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="member-list.html" data-title="添加用户" href="javascript:;">添加用户</a></li>
-                    <li><a data-href="member-del.html" data-title="管理用户" href="javascript:;">管理用户</a></li>
-                    <li><a data-href="member-level.html" data-title="等级管理" href="javascript:;">等级管理</a></li>
-                    <li><a data-href="member-scoreoperation.html" data-title="积分管理" href="javascript:;">积分管理</a></li>
-                    <li><a data-href="member-record-browse.html" data-title="浏览记录" href="javascript:void(0)">浏览记录</a></li>
-                    <li><a data-href="member-record-download.html" data-title="下载记录" href="javascript:void(0)">下载记录</a></li>
-                    <li><a data-href="member-record-share.html" data-title="分享记录" href="javascript:void(0)">分享记录</a></li>
+                    <li><a data-href="{{ url('admin/user/addUser/') }}" data-title="添加用户" href="javascript:;">添加用户</a></li>
+                    <li><a data-href="{{ url('admin/user/manageUser/') }}" data-title="管理用户" href="javascript:;">管理用户</a></li>
                 </ul>
             </dd>
         </dl>
-        <dl id="menu-admin">
+{{--        <dl id="menu-admin">
             <dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -182,7 +177,7 @@
                     <li><a data-href="system-log.html" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
                 </ul>
             </dd>
-        </dl>
+        </dl>--}}
     </div>
 </aside>
 <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>

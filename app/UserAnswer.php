@@ -79,6 +79,17 @@ class UserAnswer extends Model
         return $this->belongsTo('App\Exam','paper_id','id');
     }
 
+    /**
+     * 获取试卷信息
+     *
+     * @function getPaper
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @author CJ
+     */
+    public function getScore(){
+        return $this->belongsTo('App\ExamResult','id','id');
+    }
+
 
     /**
      * 根据传入条件筛选结果
@@ -88,7 +99,7 @@ class UserAnswer extends Model
      * @return \Illuminate\Database\Eloquent\Builder|static
      * @author CJ
      */
-    private function searchByParamsForExamPreview($params = []){
+    private function searchByParamsForExamPreview($params = [],$status = false){
         $select = new UserAnswer();
 
         $exam = new Exam();
@@ -97,7 +108,12 @@ class UserAnswer extends Model
         foreach ($exam as $item => $value){
             $exam_id[$item] = $value['id'];
         }
-        $select->whereIn('exam_id',$exam_id);
+//        if(isset($exam_id) && empty($exam_id)){
+//        }
+
+        $select = $select->whereIn('exam_id',$exam_id);
+
+
         //创建时间起始条件
         if(!empty($params['created_time_start'])){
             $select = $select->where('created_at','>=',$params['created_time_start'].' 00:00');
@@ -110,24 +126,49 @@ class UserAnswer extends Model
         if(!empty($params['order_by_created_time'])){
             $select = $select->orderBy('created_at',$params['order_by_created_time']);
         }
-        $select = $select->where('manual_evaluation','=',true);
-        $select = $select->orderBy('created_at','desc')->groupBy('exam_id');
-        $examPreview = $select->with(['getExam','getExamUser:id,name']);
+        $select = $select->where('manual_evaluation','=',$status);
+        $select = $select->orderBy('created_at','desc');
+        $examPreview = $select->with(['getExam','getExamUser:id,name','getScore:id,score']);
+
         return $examPreview;
     }
 
     /**
-     * 获取第一级考试结果分页
+     * 获取考试评分分页
      *
-     * @function getExamPaginate
+     * @function getEvaluationPaginate
      * @param array $params
      * @param int $perPage
      * @return $this
      * @author CJ
      */
-    public function getExamPaginate($params = [],$perPage = 10){
-        return self::searchByParamsForExamPreview($params)->paginate($perPage)->appends($params);
+    public function getEvaluationPaginate($params = [],$perPage = 10){
+        return self::searchByParamsForExamPreview($params,true)->paginate($perPage)->appends($params);
     }
 
+    /**
+     * 获取成绩详情分页
+     *
+     * @function getDetailsPaginate
+     * @param array $params
+     * @param int $perPage
+     * @return $this
+     * @author CJ
+     */
+    public function getDetailsPaginate($params = [],$perPage = 10){
+        return self::searchByParamsForExamPreview($params,false)->paginate($perPage)->appends($params);
+    }
+
+    /**
+     * 获得试卷信息
+     *
+     * @function getPaperOne
+     * @param string $id
+     * @return mixed
+     * @author CJ
+     */
+    public function getPaperOne($id = ''){
+        return self::find($id)->toArray();
+    }
 
 }

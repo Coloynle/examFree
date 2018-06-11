@@ -244,6 +244,7 @@ class ExamController extends Controller
      *
      * @function deleteExam
      * @return array
+     * @throws \Exception
      * @author CJ
      */
     public function deleteExam()
